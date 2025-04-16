@@ -1,22 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# E-commerce Store
+
+A modern e-commerce web application built with Next.js, Redux Toolkit, and Material-UI.
+
+## Features
+
+- User registration and authentication
+- Product catalog with categories
+- Product details page
+- Shopping cart with drag-and-drop functionality
+- Responsive design for all devices
+
+## Tech Stack
+
+- Next.js
+- TypeScript
+- Redux Toolkit
+- Material-UI
+- React Hook Form
+- Yup
+- React Query
+- Axios
+- React Beautiful DnD
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Project Structure
+
+```
+src/
+├── app/              # Next.js app router pages
+├── components/       # Reusable components
+├── features/         # Redux slices
+├── hooks/           # Custom hooks
+├── lib/             # Utility functions and API clients
+├── styles/          # Global styles
+└── types/           # TypeScript type definitions
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## API Endpoints
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The application uses the Fake Store API:
+
+- Categories: https://fakestoreapi.com/products/categories
+- Products by category: https://fakestoreapi.com/products/category/{category}
+- Product details: https://fakestoreapi.com/products/{id}
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
