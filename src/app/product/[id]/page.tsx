@@ -71,14 +71,38 @@ export default function ProductPage({
     <Box sx={{ p: 3 }}>
       <Grid container spacing={4}>
         <Grid item xs={12} md={6}>
-          <Card>
-            <CardMedia
-              component="img"
-              height="400"
-              image={product.image}
-              alt={product.title}
-              sx={{ objectFit: "contain", p: 2 }}
-            />
+          <Card
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              p: 2,
+              maxHeight: { xs: "400px", md: "500px" },
+              overflow: "hidden",
+            }}
+          >
+            <Box
+              sx={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <CardMedia
+                component="img"
+                image={product.image}
+                alt={product.title}
+                sx={{
+                  objectFit: "contain",
+                  maxWidth: "100%",
+                  maxHeight: { xs: "300px", md: "400px" },
+                  width: "auto",
+                  height: "auto",
+                }}
+              />
+            </Box>
           </Card>
         </Grid>
         <Grid item xs={12} md={6}>

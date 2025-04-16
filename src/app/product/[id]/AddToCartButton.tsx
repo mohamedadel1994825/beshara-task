@@ -4,7 +4,6 @@ import { addItem, updateQuantity } from "@/features/cart/cartSlice";
 import { RootState } from "@/lib/store";
 import AddIcon from "@mui/icons-material/Add";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import LoginIcon from "@mui/icons-material/Login";
 import RemoveIcon from "@mui/icons-material/Remove";
 import {
@@ -15,7 +14,6 @@ import {
   IconButton,
   Snackbar,
   Typography,
-  Zoom,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -71,15 +69,11 @@ export default function AddToCartButton({ product }: Props) {
 
   const handleAddToCart = () => {
     if (!isAuthenticated) {
-      // Save product info to session storage for redirect back
-      sessionStorage.setItem(
-        "pendingCartItem",
-        JSON.stringify({
-          productId: product.id,
-          pathname: window.location.pathname,
-        })
-      );
-      toast.info("Please login to add items to cart");
+      setToast({
+        open: true,
+        message: "Please login to add items to cart",
+        severity: "info",
+      });
       setIsRedirecting(true);
       setTimeout(() => {
         router.push("/login");
@@ -88,7 +82,7 @@ export default function AddToCartButton({ product }: Props) {
     }
 
     if (isInCart) {
-      return; // Don't add if already in cart
+      return;
     }
 
     setIsAdding(true);
@@ -102,7 +96,11 @@ export default function AddToCartButton({ product }: Props) {
       })
     );
 
-    toast.success("Item added to cart!");
+    setToast({
+      open: true,
+      message: `${product.title} added to cart!`,
+      severity: "success",
+    });
 
     setTimeout(() => {
       setIsAdding(false);
@@ -112,16 +110,14 @@ export default function AddToCartButton({ product }: Props) {
   const handleQuantityChange = async (newQuantity: number) => {
     try {
       if (process.env.NODE_ENV === "production") {
-        // In production, we would call an API to update the quantity
-        // For now, we'll just update the local state
-        dispatch(updateQuantity({ id: product.id, quantity: newQuantity }));
+        await updateQuantity({ id: product.id, quantity: newQuantity });
       } else {
         dispatch(updateQuantity({ id: product.id, quantity: newQuantity }));
       }
 
       setToast({
         open: true,
-        message: "Quantity updated",
+        message: `Quantity updated to ${newQuantity}`,
         severity: "success",
       });
     } catch (error) {
@@ -133,6 +129,8 @@ export default function AddToCartButton({ product }: Props) {
       });
     }
   };
+
+  const cartItem = cartItems.find((item) => item.id === product.id);
 
   useEffect(() => {
     if (isRedirecting) {
@@ -193,11 +191,18 @@ export default function AddToCartButton({ product }: Props) {
     }, 800);
   };
 
-  if (isInCart) {
-    const cartItem = cartItems.find((item) => item.id === product.id);
-    if (cartItem) {
-      return (
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+  return (
+    <>
+      {isInCart && cartItem ? (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: { xs: 0.5, sm: 1 },
+            width: "100%",
+            justifyContent: "center",
+          }}
+        >
           <IconButton
             size="small"
             onClick={() => handleQuantityChange(cartItem.quantity - 1)}
@@ -206,13 +211,23 @@ export default function AddToCartButton({ product }: Props) {
               border: "1px solid",
               borderColor: "primary.main",
               "&:hover": { backgroundColor: "primary.light" },
+              width: { xs: "32px", sm: "36px" },
+              height: { xs: "32px", sm: "36px" },
+              "& .MuiSvgIcon-root": {
+                fontSize: { xs: "1rem", sm: "1.25rem" },
+              },
             }}
           >
-            <RemoveIcon fontSize="small" />
+            <RemoveIcon />
           </IconButton>
           <Typography
             variant="body1"
-            sx={{ minWidth: "24px", textAlign: "center" }}
+            sx={{
+              minWidth: { xs: "32px", sm: "40px" },
+              textAlign: "center",
+              fontSize: { xs: "0.875rem", sm: "1rem" },
+              fontWeight: 500,
+            }}
           >
             {cartItem.quantity}
           </Typography>
@@ -223,55 +238,36 @@ export default function AddToCartButton({ product }: Props) {
               border: "1px solid",
               borderColor: "primary.main",
               "&:hover": { backgroundColor: "primary.light" },
+              width: { xs: "32px", sm: "36px" },
+              height: { xs: "32px", sm: "36px" },
+              "& .MuiSvgIcon-root": {
+                fontSize: { xs: "1rem", sm: "1.25rem" },
+              },
             }}
           >
-            <AddIcon fontSize="small" />
+            <AddIcon />
           </IconButton>
         </Box>
-      );
-    }
-  }
-
-  return (
-    <>
-      <Button
-        ref={buttonRef}
-        variant="contained"
-        color={isInCart ? "success" : "primary"}
-        onClick={handleAddToCart}
-        disabled={isAdding || isRedirecting || isInCart}
-        fullWidth
-        size="large"
-        startIcon={
-          isRedirecting ? (
-            <LoginIcon />
-          ) : isInCart ? (
-            <CheckCircleIcon />
-          ) : (
-            <AddShoppingCartIcon />
-          )
-        }
-        sx={{
-          minWidth: "120px",
-          whiteSpace: "nowrap",
-          height: "40px",
-          transition: "all 0.3s ease",
-          transform: isAdding ? "scale(0.95)" : "scale(1)",
-          opacity: isAdding ? 0.7 : 1,
-          "& .MuiButton-startIcon": {
-            transition: "transform 0.3s ease",
-            transform: isAdding ? "scale(1.2)" : "scale(1)",
-          },
-        }}
-      >
-        {isRedirecting
-          ? "Redirecting to login..."
-          : isInCart
-          ? "Added to Cart"
-          : isAdding
-          ? "Adding..."
-          : "Add to Cart"}
-      </Button>
+      ) : (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleAddToCart}
+          disabled={isAdding || isRedirecting}
+          startIcon={isAdding ? <LoginIcon /> : <AddShoppingCartIcon />}
+          sx={{
+            width: "100%",
+            py: 1.25,
+            fontSize: { xs: "0.75rem", sm: "0.875rem", md: "1rem" },
+            height: { xs: "36px", sm: "40px" },
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {isAdding ? "Adding..." : "Add to Cart"}
+        </Button>
+      )}
 
       <Snackbar
         open={toast.open}
@@ -284,37 +280,9 @@ export default function AddToCartButton({ product }: Props) {
           onClose={handleCloseToast}
           severity={toast.severity}
           variant="filled"
-          sx={{
-            width: "100%",
-            alignItems: "center",
-            boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
-          }}
-          icon={
-            toast.severity === "success" ? (
-              <Zoom in={true} timeout={300}>
-                <CheckCircleIcon />
-              </Zoom>
-            ) : undefined
-          }
+          sx={{ width: "100%" }}
         >
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            {toast.severity === "success" && (
-              <Zoom in={true} timeout={300}>
-                <img
-                  src={product.image}
-                  alt={product.title}
-                  style={{
-                    width: "30px",
-                    height: "30px",
-                    objectFit: "contain",
-                    background: "white",
-                    borderRadius: "4px",
-                  }}
-                />
-              </Zoom>
-            )}
-            <Typography variant="body2">{toast.message}</Typography>
-          </Box>
+          {toast.message}
         </Alert>
       </Snackbar>
     </>

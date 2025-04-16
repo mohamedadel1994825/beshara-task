@@ -294,22 +294,21 @@ const CartPage = () => {
                                     alignItems: "center",
                                     backgroundColor: "background.paper",
                                     p: 1,
+                                    borderRadius: 1,
+                                    height: {
+                                      xs: "100px",
+                                      sm: "120px",
+                                      md: "140px",
+                                    },
                                     "& img": {
-                                      width: "80px",
-                                      height: "80px",
+                                      maxWidth: "100%",
+                                      maxHeight: "100%",
                                       objectFit: "contain",
+                                      borderRadius: 1,
                                     },
                                   }}
                                 >
-                                  <img
-                                    src={item.image}
-                                    alt={item.title}
-                                    style={{
-                                      width: "80px",
-                                      height: "80px",
-                                      objectFit: "contain",
-                                    }}
-                                  />
+                                  <img src={item.image} alt={item.title} />
                                 </Box>
                               </Grid>
                               <Grid item xs={12} sm={6}>
