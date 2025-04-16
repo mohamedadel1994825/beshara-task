@@ -14,6 +14,7 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -122,29 +123,53 @@ const CategoryAccordion = ({
                     </Typography>
                     <Box
                       sx={{
-                        mt: 2,
                         display: "flex",
-                        gap: 1,
-                        alignItems: "center",
+                        gap: { xs: 1, sm: 2 },
+                        mt: { xs: 1, sm: 2 },
+                        flexDirection: { xs: "column", sm: "row" },
+                        width: "100%",
+                        alignItems: "stretch",
                       }}
                     >
-                      <Box sx={{ width: "45%" }}>
-                        <AddToCartButton product={product} />
-                      </Box>
-                      <Box sx={{ width: "55%" }}>
-                        <Button
-                          variant="outlined"
-                          onClick={() => handleProductClick(product.id)}
-                          fullWidth
-                          sx={{
-                            minWidth: "120px",
-                            whiteSpace: "nowrap",
-                            height: "40px",
-                          }}
-                        >
-                          View Details
-                        </Button>
-                      </Box>
+                      <AddToCartButton
+                        product={product}
+                        sx={{
+                          width: { xs: "100%", sm: "45%" },
+                          py: { xs: 1, sm: 1.25 },
+                          fontSize: {
+                            xs: "0.75rem",
+                            sm: "0.875rem",
+                            md: "1rem",
+                          },
+                          height: { xs: "36px", sm: "40px" },
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      />
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        component={Link}
+                        href={`/product/${product.id}`}
+                        sx={{
+                          width: { xs: "100%", sm: "55%" },
+                          py: { xs: 1, sm: 1.25 },
+                          fontSize: {
+                            xs: "0.75rem",
+                            sm: "0.875rem",
+                            md: "1rem",
+                          },
+                          height: { xs: "36px", sm: "40px" },
+                          whiteSpace: "nowrap",
+                          minWidth: { xs: "120px", sm: "140px" },
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        View Details
+                      </Button>
                     </Box>
                   </CardContent>
                 </Card>

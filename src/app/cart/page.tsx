@@ -15,8 +15,12 @@ import {
   Button,
   Card,
   CardContent,
-  CardMedia,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Grid,
   IconButton,
   Snackbar,
@@ -51,6 +55,8 @@ const CartPage = () => {
     message: "",
     severity: "info",
   });
+
+  const [openClearDialog, setOpenClearDialog] = useState(false);
 
   const handleCloseToast = () => {
     setToast({ ...toast, open: false });
@@ -102,14 +108,11 @@ const CartPage = () => {
 
   const handleClearCart = async () => {
     try {
-      // Try to use API in production
       if (process.env.NODE_ENV === "production") {
         await clearCartMutation().unwrap();
       } else {
-        // Use local state in development
         dispatch(clearCart());
       }
-
       setToast({
         open: true,
         message: "Cart cleared successfully",
@@ -122,6 +125,8 @@ const CartPage = () => {
         message: "Failed to clear cart. Please try again.",
         severity: "error",
       });
+    } finally {
+      setOpenClearDialog(false);
     }
   };
 
@@ -180,13 +185,30 @@ const CartPage = () => {
                           <CardContent>
                             <Grid container spacing={2} alignItems="center">
                               <Grid item xs={12} sm={3}>
-                                <CardMedia
-                                  component="img"
-                                  height="100"
-                                  image={item.image}
-                                  alt={item.title}
-                                  sx={{ objectFit: "contain" }}
-                                />
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    backgroundColor: "background.paper",
+                                    p: 1,
+                                    "& img": {
+                                      width: "80px",
+                                      height: "80px",
+                                      objectFit: "contain",
+                                    },
+                                  }}
+                                >
+                                  <img
+                                    src={item.image}
+                                    alt={item.title}
+                                    style={{
+                                      width: "80px",
+                                      height: "80px",
+                                      objectFit: "contain",
+                                    }}
+                                  />
+                                </Box>
                               </Grid>
                               <Grid item xs={12} sm={6}>
                                 <Typography variant="h6">
@@ -235,29 +257,146 @@ const CartPage = () => {
             </Droppable>
           </DragDropContext>
 
-          <Box sx={{ mt: 3, display: "flex", justifyContent: "space-between" }}>
-            <Button
-              variant="outlined"
-              color="error"
-              onClick={handleClearCart}
-              disabled={isClearing}
-              startIcon={
-                isClearing && <CircularProgress size={20} color="error" />
-              }
+          {items.length > 0 && (
+            <Box
+              sx={{
+                mt: 3,
+                display: "flex",
+                flexDirection: { xs: "column", sm: "row" },
+                justifyContent: "space-between",
+                alignItems: { xs: "stretch", sm: "center" },
+                gap: { xs: 2, sm: 3 },
+              }}
             >
-              {isClearing ? "Clearing..." : "Clear Cart"}
-            </Button>
-            <Box sx={{ textAlign: "right" }}>
-              <Typography variant="h5" gutterBottom>
-                Total: ${calculateTotal().toFixed(2)}
-              </Typography>
-              <Button variant="contained" color="primary">
-                Checkout
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={() => setOpenClearDialog(true)}
+                disabled={isClearing}
+                startIcon={<DeleteIcon />}
+                sx={{
+                  width: { xs: "100%", sm: "180px", md: "200px", lg: "220px" },
+                  py: { xs: 1.25, sm: 1.5 },
+                  fontSize: { xs: "0.875rem", sm: "0.9375rem", md: "1rem" },
+                  fontWeight: 500,
+                  "&:hover": {
+                    backgroundColor: "error.light",
+                    color: "white",
+                  },
+                }}
+              >
+                Clear Cart
               </Button>
+              <Box
+                sx={{
+                  textAlign: { xs: "center", sm: "right" },
+                  width: { xs: "100%", sm: "auto" },
+                }}
+              >
+                <Typography
+                  variant="h5"
+                  gutterBottom
+                  sx={{
+                    fontSize: {
+                      xs: "1.25rem",
+                      sm: "1.375rem",
+                      md: "1.5rem",
+                      lg: "1.75rem",
+                    },
+                    fontWeight: 600,
+                    mb: { xs: 1, sm: 1.5 },
+                  }}
+                >
+                  Total: ${calculateTotal().toFixed(2)}
+                </Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  sx={{
+                    width: {
+                      xs: "100%",
+                      sm: "220px",
+                      md: "280px",
+                      lg: "320px",
+                    },
+                    py: { xs: 1.5, sm: 1.75, md: 2 },
+                    fontSize: {
+                      xs: "0.9375rem",
+                      sm: "1rem",
+                      md: "1.125rem",
+                      lg: "1.25rem",
+                    },
+                    fontWeight: 600,
+                    boxShadow: 2,
+                    "&:hover": {
+                      backgroundColor: "primary.dark",
+                      boxShadow: 4,
+                    },
+                  }}
+                >
+                  Checkout
+                </Button>
+              </Box>
             </Box>
-          </Box>
+          )}
         </>
       )}
+
+      {/* Clear Cart Confirmation Dialog */}
+      <Dialog
+        open={openClearDialog}
+        onClose={() => setOpenClearDialog(false)}
+        aria-labelledby="clear-cart-dialog-title"
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle id="clear-cart-dialog-title">
+          Clear Shopping Cart
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to clear your cart? This action cannot be
+            undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ p: 2 }}>
+          <Button
+            onClick={() => setOpenClearDialog(false)}
+            color="primary"
+            variant="outlined"
+            sx={{
+              width: { xs: "100%", sm: "180px", md: "200px" },
+              py: { xs: 1.25, sm: 1.5 },
+              fontSize: { xs: "0.875rem", sm: "0.9375rem", md: "1rem" },
+              fontWeight: 500,
+              mb: { xs: 1, sm: 0 },
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleClearCart}
+            color="error"
+            variant="contained"
+            disabled={isClearing}
+            startIcon={
+              isClearing ? <CircularProgress size={20} /> : <DeleteIcon />
+            }
+            sx={{
+              width: { xs: "100%", sm: "180px", md: "200px" },
+              py: { xs: 1.25, sm: 1.5 },
+              fontSize: { xs: "0.875rem", sm: "0.9375rem", md: "1rem" },
+              fontWeight: 500,
+              "&:hover": {
+                backgroundColor: "error.dark",
+              },
+            }}
+          >
+            {isClearing ? "Clearing..." : "Clear Cart"}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Snackbar
         open={toast.open}

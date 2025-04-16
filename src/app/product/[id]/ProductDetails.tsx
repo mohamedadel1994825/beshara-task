@@ -4,7 +4,6 @@ import { useGetProductQuery } from "@/features/products/productsSlice";
 import {
   Box,
   Card,
-  CardMedia,
   CircularProgress,
   Grid,
   Rating,
@@ -43,12 +42,26 @@ export default function ProductDetails({ id }: { id: string }) {
       <Grid container spacing={4}>
         <Grid item xs={12} md={6}>
           <Card>
-            <CardMedia
-              component="img"
-              height="400"
-              image={product.image}
-              alt={product.title}
-            />
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "background.paper",
+                p: 2,
+                minHeight: "400px",
+              }}
+            >
+              <img
+                src={product.image}
+                alt={product.title}
+                style={{
+                  width: "300px",
+                  height: "300px",
+                  objectFit: "contain",
+                }}
+              />
+            </Box>
           </Card>
         </Grid>
         <Grid item xs={12} md={6}>
