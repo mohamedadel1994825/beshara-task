@@ -33,19 +33,22 @@ export default function AboutPage() {
 
   const teamMembers = [
     {
-      name: "John Doe",
+      name: "Ahmed Hassan",
       role: "CEO & Founder",
-      image: "/team/john.jpg",
+      image:
+        "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?w=400&h=400&fit=crop",
     },
     {
-      name: "Jane Smith",
+      name: "Mohammed Ali",
       role: "Marketing Director",
-      image: "/team/jane.jpg",
+      image:
+        "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?w=400&h=400&fit=crop",
     },
     {
-      name: "Mike Johnson",
+      name: "Omar Khan",
       role: "Product Manager",
-      image: "/team/mike.jpg",
+      image:
+        "https://images.pexels.com/photos/834863/pexels-photo-834863.jpeg?w=400&h=400&fit=crop",
     },
   ];
 
