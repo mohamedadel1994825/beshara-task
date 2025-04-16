@@ -13,9 +13,22 @@ interface CartState {
     items: Product[];
 }
 
-const initialState: CartState = {
-    items: [],
+// Load initial state from localStorage if available
+const loadInitialState = (): CartState => {
+    if (typeof window !== 'undefined') {
+        try {
+            const savedCart = localStorage.getItem('cart');
+            if (savedCart) {
+                return { items: JSON.parse(savedCart) };
+            }
+        } catch (error) {
+            console.error('Error loading cart from localStorage:', error);
+        }
+    }
+    return { items: [] };
 };
+
+const initialState: CartState = loadInitialState();
 
 const cartSlice = createSlice({
     name: 'cart',
@@ -28,21 +41,61 @@ const cartSlice = createSlice({
             } else {
                 state.items.push({ ...action.payload, quantity: 1 });
             }
+            // Save to localStorage
+            if (typeof window !== 'undefined') {
+                try {
+                    localStorage.setItem('cart', JSON.stringify(state.items));
+                } catch (error) {
+                    console.error('Error saving cart to localStorage:', error);
+                }
+            }
         },
         removeItem: (state, action: PayloadAction<number>) => {
             state.items = state.items.filter(item => item.id !== action.payload);
+            // Save to localStorage
+            if (typeof window !== 'undefined') {
+                try {
+                    localStorage.setItem('cart', JSON.stringify(state.items));
+                } catch (error) {
+                    console.error('Error saving cart to localStorage:', error);
+                }
+            }
         },
         updateQuantity: (state, action: PayloadAction<{ id: number; quantity: number }>) => {
             const item = state.items.find(item => item.id === action.payload.id);
             if (item) {
                 item.quantity = action.payload.quantity;
+                // Save to localStorage
+                if (typeof window !== 'undefined') {
+                    try {
+                        localStorage.setItem('cart', JSON.stringify(state.items));
+                    } catch (error) {
+                        console.error('Error saving cart to localStorage:', error);
+                    }
+                }
             }
         },
         reorderItems: (state, action: PayloadAction<Product[]>) => {
             state.items = action.payload;
+            // Save to localStorage
+            if (typeof window !== 'undefined') {
+                try {
+                    localStorage.setItem('cart', JSON.stringify(state.items));
+                } catch (error) {
+                    console.error('Error saving cart to localStorage:', error);
+                }
+            }
         },
         clearCart: (state) => {
             state.items = [];
+            // Clear localStorage
+            if (typeof window !== 'undefined') {
+                try {
+                    localStorage.removeItem('cart');
+                } catch (error) {
+                    console.error('Error clearing cart from localStorage:', error);
+                }
+            }
         },
     },
 });

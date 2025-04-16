@@ -1,26 +1,62 @@
 "use client";
 
-import { clearCart, removeItem, reorderItems } from "@/features/cart/cartSlice";
+import {
+  clearCart,
+  removeItem,
+  reorderItems,
+  useClearCartMutation,
+  useRemoveFromCartMutation,
+} from "@/features/cart/cartSlice";
 import { RootState } from "@/lib/store";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
+  Alert,
   Box,
   Button,
   Card,
   CardContent,
   CardMedia,
+  CircularProgress,
   Grid,
   IconButton,
+  Snackbar,
   Typography,
 } from "@mui/material";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { useState } from "react";
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  DropResult,
+} from "react-beautiful-dnd";
 import { useDispatch, useSelector } from "react-redux";
 
 const CartPage = () => {
   const dispatch = useDispatch();
   const { items } = useSelector((state: RootState) => state.cart);
+  const [removeFromCart, { isLoading: isRemoving }] =
+    useRemoveFromCartMutation();
+  const [clearCartMutation, { isLoading: isClearing }] = useClearCartMutation();
 
-  const handleDragEnd = (result: any) => {
+  // State for item being removed
+  const [removingItemId, setRemovingItemId] = useState<number | null>(null);
+
+  // Toast state
+  const [toast, setToast] = useState<{
+    open: boolean;
+    message: string;
+    severity: "success" | "error" | "info";
+  }>({
+    open: false,
+    message: "",
+    severity: "info",
+  });
+
+  const handleCloseToast = () => {
+    setToast({ ...toast, open: false });
+  };
+
+  const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
 
     const reorderedItems = Array.from(items);
@@ -28,14 +64,65 @@ const CartPage = () => {
     reorderedItems.splice(result.destination.index, 0, removed);
 
     dispatch(reorderItems(reorderedItems));
+
+    setToast({
+      open: true,
+      message: "Cart items reordered successfully",
+      severity: "success",
+    });
   };
 
-  const handleRemoveItem = (id: number) => {
-    dispatch(removeItem(id));
+  const handleRemoveItem = async (id: number) => {
+    setRemovingItemId(id);
+    try {
+      // Try to use API in production
+      if (process.env.NODE_ENV === "production") {
+        await removeFromCart(id).unwrap();
+      } else {
+        // Use local state in development
+        dispatch(removeItem(id));
+      }
+
+      setToast({
+        open: true,
+        message: "Item removed from cart",
+        severity: "success",
+      });
+    } catch (error) {
+      console.error("Failed to remove item:", error);
+      setToast({
+        open: true,
+        message: "Failed to remove item. Please try again.",
+        severity: "error",
+      });
+    } finally {
+      setRemovingItemId(null);
+    }
   };
 
-  const handleClearCart = () => {
-    dispatch(clearCart());
+  const handleClearCart = async () => {
+    try {
+      // Try to use API in production
+      if (process.env.NODE_ENV === "production") {
+        await clearCartMutation().unwrap();
+      } else {
+        // Use local state in development
+        dispatch(clearCart());
+      }
+
+      setToast({
+        open: true,
+        message: "Cart cleared successfully",
+        severity: "success",
+      });
+    } catch (error) {
+      console.error("Failed to clear cart:", error);
+      setToast({
+        open: true,
+        message: "Failed to clear cart. Please try again.",
+        severity: "error",
+      });
+    }
   };
 
   const calculateTotal = () => {
@@ -53,21 +140,42 @@ const CartPage = () => {
       ) : (
         <>
           <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId="cart-items">
-              {(provided) => (
-                <Box {...provided.droppableProps} ref={provided.innerRef}>
+            <Droppable
+              droppableId="cart-items"
+              isDropDisabled={false}
+              isCombineEnabled={false}
+            >
+              {(provided, snapshot) => (
+                <Box
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                  sx={{
+                    backgroundColor: snapshot.isDraggingOver
+                      ? "rgba(0, 0, 0, 0.02)"
+                      : "transparent",
+                    transition: "background-color 0.2s ease",
+                  }}
+                >
                   {items.map((item, index) => (
                     <Draggable
                       key={item.id}
                       draggableId={item.id.toString()}
                       index={index}
+                      isDragDisabled={false}
                     >
-                      {(provided) => (
+                      {(provided, snapshot) => (
                         <Card
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
-                          sx={{ mb: 2 }}
+                          sx={{
+                            mb: 2,
+                            transform: snapshot.isDragging
+                              ? "scale(1.02)"
+                              : "none",
+                            transition: "transform 0.2s ease",
+                            boxShadow: snapshot.isDragging ? 3 : 1,
+                          }}
                         >
                           <CardContent>
                             <Grid container spacing={2} alignItems="center">
@@ -102,8 +210,16 @@ const CartPage = () => {
                                   <IconButton
                                     color="error"
                                     onClick={() => handleRemoveItem(item.id)}
+                                    disabled={removingItemId === item.id}
                                   >
-                                    <DeleteIcon />
+                                    {removingItemId === item.id ? (
+                                      <CircularProgress
+                                        size={24}
+                                        color="error"
+                                      />
+                                    ) : (
+                                      <DeleteIcon />
+                                    )}
                                   </IconButton>
                                 </Box>
                               </Grid>
@@ -120,8 +236,16 @@ const CartPage = () => {
           </DragDropContext>
 
           <Box sx={{ mt: 3, display: "flex", justifyContent: "space-between" }}>
-            <Button variant="outlined" color="error" onClick={handleClearCart}>
-              Clear Cart
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={handleClearCart}
+              disabled={isClearing}
+              startIcon={
+                isClearing && <CircularProgress size={20} color="error" />
+              }
+            >
+              {isClearing ? "Clearing..." : "Clear Cart"}
             </Button>
             <Box sx={{ textAlign: "right" }}>
               <Typography variant="h5" gutterBottom>
@@ -134,6 +258,22 @@ const CartPage = () => {
           </Box>
         </>
       )}
+
+      <Snackbar
+        open={toast.open}
+        autoHideDuration={3000}
+        onClose={handleCloseToast}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          onClose={handleCloseToast}
+          severity={toast.severity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {toast.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

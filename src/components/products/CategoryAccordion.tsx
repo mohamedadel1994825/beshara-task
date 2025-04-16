@@ -1,4 +1,4 @@
-import { addItem } from "@/features/cart/cartSlice";
+import AddToCartButton from "@/app/product/[id]/AddToCartButton";
 import { getProductsByCategory, Product } from "@/services/api";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
@@ -16,7 +16,6 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 
 interface CategoryAccordionProps {
   category: string;
@@ -29,7 +28,6 @@ const CategoryAccordion = ({
   expanded,
   onChange,
 }: CategoryAccordionProps) => {
-  const dispatch = useDispatch();
   const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
@@ -58,18 +56,6 @@ const CategoryAccordion = ({
     }
   }, [expanded, category]);
 
-  const handleAddToCart = (product: Product) => {
-    dispatch(
-      addItem({
-        id: product.id,
-        title: product.title,
-        price: product.price,
-        image: product.image,
-        quantity: 1,
-      })
-    );
-  };
-
   const handleProductClick = (productId: number) => {
     router.push(`/product/${productId}`);
   };
@@ -78,10 +64,10 @@ const CategoryAccordion = ({
     <Accordion
       expanded={expanded}
       onChange={() => onChange(category)}
-      TransitionProps={{ unmountOnExit: true }}
+      sx={{ mb: 2 }}
     >
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography sx={{ textTransform: "capitalize" }}>{category}</Typography>
+        <Typography variant="h6">{category}</Typography>
       </AccordionSummary>
       <AccordionDetails>
         {loading ? (
@@ -91,18 +77,38 @@ const CategoryAccordion = ({
         ) : error ? (
           <Typography color="error">{error}</Typography>
         ) : (
-          <Grid container spacing={2}>
+          <Grid container spacing={3}>
             {products.map((product) => (
               <Grid item xs={12} sm={6} md={4} key={product.id}>
-                <Card>
-                  <CardMedia
-                    component="img"
-                    height="200"
-                    image={product.image}
-                    alt={product.title}
-                    sx={{ objectFit: "contain", p: 1 }}
-                  />
-                  <CardContent>
+                <Card
+                  sx={{
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      height: "200px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      p: 2,
+                      bgcolor: "background.paper",
+                    }}
+                  >
+                    <CardMedia
+                      component="img"
+                      image={product.image}
+                      alt={product.title}
+                      sx={{
+                        maxHeight: "100%",
+                        maxWidth: "100%",
+                        objectFit: "contain",
+                      }}
+                    />
+                  </Box>
+                  <CardContent sx={{ flexGrow: 1 }}>
                     <Typography
                       gutterBottom
                       variant="h6"
@@ -115,19 +121,18 @@ const CategoryAccordion = ({
                       ${product.price}
                     </Typography>
                     <Box sx={{ mt: 2, display: "flex", gap: 1 }}>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => handleAddToCart(product)}
-                      >
-                        Add to Cart
-                      </Button>
-                      <Button
-                        variant="outlined"
-                        onClick={() => handleProductClick(product.id)}
-                      >
-                        View Details
-                      </Button>
+                      <Box sx={{ width: "55%" }}>
+                        <AddToCartButton product={product} />
+                      </Box>
+                      <Box sx={{ width: "45%" }}>
+                        <Button
+                          variant="outlined"
+                          onClick={() => handleProductClick(product.id)}
+                          fullWidth
+                        >
+                          View Details
+                        </Button>
+                      </Box>
                     </Box>
                   </CardContent>
                 </Card>

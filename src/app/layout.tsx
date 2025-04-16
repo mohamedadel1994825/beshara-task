@@ -1,3 +1,4 @@
+import AuthInitializer from "@/components/auth/AuthInitializer";
 import Navbar from "@/components/layout/Navbar";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -20,6 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
+          <AuthInitializer />
           <Navbar />
           <main>{children}</main>
         </Providers>

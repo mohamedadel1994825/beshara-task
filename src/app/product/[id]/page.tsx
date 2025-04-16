@@ -1,6 +1,5 @@
 "use client";
 
-import { addItem } from "@/features/cart/cartSlice";
 import { getProductById, Product } from "@/services/api";
 import {
   Box,
@@ -14,7 +13,7 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { use, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import AddToCartButton from "./AddToCartButton";
 
 export default function ProductPage({
   params,
@@ -23,7 +22,6 @@ export default function ProductPage({
 }) {
   const { id } = use(params);
   const router = useRouter();
-  const dispatch = useDispatch();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -45,20 +43,6 @@ export default function ProductPage({
 
     fetchProduct();
   }, [id]);
-
-  const handleAddToCart = () => {
-    if (product) {
-      dispatch(
-        addItem({
-          id: product.id,
-          title: product.title,
-          price: product.price,
-          image: product.image,
-          quantity: 1,
-        })
-      );
-    }
-  };
 
   if (loading) {
     return (
@@ -116,16 +100,7 @@ export default function ProductPage({
           <Typography variant="subtitle1" gutterBottom>
             Category: {product.category}
           </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleAddToCart}
-            fullWidth
-            size="large"
-            sx={{ mt: 2 }}
-          >
-            Add to Cart
-          </Button>
+          <AddToCartButton product={product} />
         </Grid>
       </Grid>
     </Box>

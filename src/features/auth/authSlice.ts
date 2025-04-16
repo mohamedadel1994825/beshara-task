@@ -2,11 +2,9 @@ import { api } from '@/lib/api';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface User {
-    firstName: string;
-    lastName: string;
+    id: number;
     username: string;
     email: string;
-    address?: string;
 }
 
 interface AuthState {
@@ -14,10 +12,24 @@ interface AuthState {
     isAuthenticated: boolean;
 }
 
-const initialState: AuthState = {
-    user: null,
-    isAuthenticated: false,
+// Load initial state from cookies if available
+const loadInitialState = (): AuthState => {
+    if (typeof window !== 'undefined') {
+        const isAuthenticated = document.cookie.includes('auth=true');
+        const userStr = localStorage.getItem('currentUser');
+        const user = userStr ? JSON.parse(userStr) : null;
+        return {
+            user,
+            isAuthenticated,
+        };
+    }
+    return {
+        user: null,
+        isAuthenticated: false,
+    };
 };
+
+const initialState: AuthState = loadInitialState();
 
 const authSlice = createSlice({
     name: 'auth',
@@ -26,10 +38,18 @@ const authSlice = createSlice({
         login: (state, action: PayloadAction<User>) => {
             state.user = action.payload;
             state.isAuthenticated = true;
+            // Save user to localStorage
+            localStorage.setItem('currentUser', JSON.stringify(action.payload));
+            // Set auth cookie
+            document.cookie = 'auth=true; path=/';
         },
         logout: (state) => {
             state.user = null;
             state.isAuthenticated = false;
+            // Remove user from localStorage
+            localStorage.removeItem('currentUser');
+            // Remove auth cookie
+            document.cookie = 'auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
         },
     },
 });

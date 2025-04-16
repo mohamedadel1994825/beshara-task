@@ -10,10 +10,8 @@ import PersonIcon from "@mui/icons-material/Person";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import {
   AppBar,
-  Avatar,
   Badge,
   Box,
-  Chip,
   Divider,
   IconButton,
   ListItemIcon,
@@ -81,70 +79,89 @@ const Navbar = () => {
 
         {/* Common navigation links - visible to all users */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Tooltip title="About">
+          <Tooltip
+            title="About"
+            placement="bottom"
+            arrow
+            PopperProps={{
+              modifiers: [
+                {
+                  name: "preventOverflow",
+                  enabled: true,
+                  options: {
+                    altAxis: true,
+                    altBoundary: true,
+                    tether: true,
+                    rootBoundary: "document",
+                    padding: 8,
+                  },
+                },
+              ],
+            }}
+          >
             <IconButton color="inherit" component={Link} href="/about">
               <InfoIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Contact Us">
-            <IconButton color="inherit" component={Link} href="/contact">
-              <EmailIcon />
-            </IconButton>
-          </Tooltip>
+          <IconButton color="inherit" component={Link} href="/contact">
+            <EmailIcon />
+          </IconButton>
 
           {/* User-specific navigation */}
           {isAuthenticated ? (
             <>
               {/* Logged-in user section */}
-              <Tooltip title="My Cart">
+              <Tooltip title="Cart">
                 <IconButton color="inherit" component={Link} href="/cart">
                   <Badge badgeContent={items.length} color="secondary">
                     <ShoppingCartIcon />
                   </Badge>
                 </IconButton>
               </Tooltip>
-              <Chip
-                avatar={
-                  <Avatar sx={{ bgcolor: "secondary.main" }}>
-                    {getInitials()}
-                  </Avatar>
-                }
-                label={user?.firstName || "User"}
-                color="default"
-                variant="outlined"
-                onClick={handleMenuOpen}
-                sx={{
-                  bgcolor: "rgba(255,255,255,0.15)",
-                  color: "white",
-                  "&:hover": {
-                    bgcolor: "rgba(255,255,255,0.25)",
-                  },
-                  ml: 1,
-                  border: "none",
-                }}
-              />
+              <Tooltip title="Account">
+                <IconButton
+                  color="inherit"
+                  onClick={handleMenuOpen}
+                  sx={{
+                    ml: 1,
+                    border: "1px solid rgba(255,255,255,0.3)",
+                    borderRadius: 1,
+                    px: 2,
+                    py: 0.5,
+                    fontSize: "0.875rem",
+                    "&:hover": {
+                      bgcolor: "rgba(255,255,255,0.1)",
+                    },
+                  }}
+                >
+                  <PersonIcon sx={{ mr: 1, fontSize: "1.25rem" }} />
+                  {user?.username || "User"}
+                </IconButton>
+              </Tooltip>
             </>
           ) : (
             /* Non-logged-in user section */
-            <IconButton
-              color="inherit"
-              component={Link}
-              href="/login"
-              sx={{
-                ml: 1,
-                border: "1px solid rgba(255,255,255,0.3)",
-                borderRadius: 1,
-                px: 2,
-                py: 0.5,
-                fontSize: "0.875rem",
-                "&:hover": {
-                  bgcolor: "rgba(255,255,255,0.1)",
-                },
-              }}
-            >
-              <LoginIcon sx={{ mr: 1, fontSize: "1.25rem" }} />
-              Login
-            </IconButton>
+            <Tooltip title="Login">
+              <IconButton
+                color="inherit"
+                component={Link}
+                href="/login"
+                sx={{
+                  ml: 1,
+                  border: "1px solid rgba(255,255,255,0.3)",
+                  borderRadius: 1,
+                  px: 2,
+                  py: 0.5,
+                  fontSize: "0.875rem",
+                  "&:hover": {
+                    bgcolor: "rgba(255,255,255,0.1)",
+                  },
+                }}
+              >
+                <LoginIcon sx={{ mr: 1, fontSize: "1.25rem" }} />
+                Login
+              </IconButton>
+            </Tooltip>
           )}
         </Box>
 
