@@ -71,48 +71,78 @@ const Navbar = () => {
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{
+            flexGrow: 1,
+            fontSize: {
+              xs: "0.875rem", // Extra small screens
+              sm: "1rem", // Small screens
+              md: "1.25rem", // Medium screens
+              lg: "1.5rem", // Large screens
+            },
+            fontWeight: 600,
+            letterSpacing: "0.5px",
+          }}
+        >
           <Link href="/" style={{ textDecoration: "none", color: "inherit" }}>
-            E-Commerce Store
+            Beshara Store
           </Link>
         </Typography>
 
         {/* Common navigation links - visible to all users */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Tooltip
-            title="About"
-            placement="bottom"
-            arrow
-            PopperProps={{
-              modifiers: [
-                {
-                  name: "preventOverflow",
-                  enabled: true,
-                  options: {
-                    altAxis: true,
-                    altBoundary: true,
-                    tether: true,
-                    rootBoundary: "document",
-                    padding: 8,
-                  },
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: { xs: 0.5, sm: 1 },
+          }}
+        >
+          <Tooltip title="About" placement="bottom" arrow>
+            <IconButton
+              color="inherit"
+              component={Link}
+              href="/about"
+              sx={{
+                p: { xs: 0.5, sm: 1 },
+                "& .MuiSvgIcon-root": {
+                  fontSize: { xs: "1.1rem", sm: "1.25rem", md: "1.5rem" },
                 },
-              ],
-            }}
-          >
-            <IconButton color="inherit" component={Link} href="/about">
+              }}
+            >
               <InfoIcon />
             </IconButton>
           </Tooltip>
-          <IconButton color="inherit" component={Link} href="/contact">
+          <IconButton
+            color="inherit"
+            component={Link}
+            href="/contact"
+            sx={{
+              p: { xs: 0.5, sm: 1 },
+              "& .MuiSvgIcon-root": {
+                fontSize: { xs: "1.1rem", sm: "1.25rem", md: "1.5rem" },
+              },
+            }}
+          >
             <EmailIcon />
           </IconButton>
 
           {/* User-specific navigation */}
           {isAuthenticated ? (
             <>
-              {/* Logged-in user section */}
               <Tooltip title="Cart">
-                <IconButton color="inherit" component={Link} href="/cart">
+                <IconButton
+                  color="inherit"
+                  component={Link}
+                  href="/cart"
+                  sx={{
+                    p: { xs: 0.5, sm: 1 },
+                    "& .MuiSvgIcon-root": {
+                      fontSize: { xs: "1.1rem", sm: "1.25rem", md: "1.5rem" },
+                    },
+                  }}
+                >
                   <Badge badgeContent={items.length} color="secondary">
                     <ShoppingCartIcon />
                   </Badge>
@@ -123,43 +153,66 @@ const Navbar = () => {
                   color="inherit"
                   onClick={handleMenuOpen}
                   sx={{
-                    ml: 1,
+                    ml: { xs: 0.5, sm: 1 },
                     border: "1px solid rgba(255,255,255,0.3)",
                     borderRadius: 1,
-                    px: 2,
-                    py: 0.5,
-                    fontSize: "0.875rem",
+                    px: { xs: 1, sm: 2 },
+                    py: { xs: 0.25, sm: 0.5 },
+                    fontSize: { xs: "0.75rem", sm: "0.875rem" },
                     "&:hover": {
                       bgcolor: "rgba(255,255,255,0.1)",
                     },
+                    "& .MuiSvgIcon-root": {
+                      fontSize: { xs: "1rem", sm: "1.25rem" },
+                      mr: { xs: 0.5, sm: 1 },
+                    },
                   }}
                 >
-                  <PersonIcon sx={{ mr: 1, fontSize: "1.25rem" }} />
-                  {user?.username || "User"}
+                  <PersonIcon />
+                  <Box
+                    component="span"
+                    sx={{
+                      display: { xs: "none", sm: "inline" },
+                      ml: { xs: 0.5, sm: 1 },
+                    }}
+                  >
+                    {user?.username || "User"}
+                  </Box>
                 </IconButton>
               </Tooltip>
             </>
           ) : (
-            /* Non-logged-in user section */
             <Tooltip title="Login">
               <IconButton
                 color="inherit"
                 component={Link}
                 href="/login"
                 sx={{
-                  ml: 1,
+                  ml: { xs: 0.5, sm: 1 },
                   border: "1px solid rgba(255,255,255,0.3)",
                   borderRadius: 1,
-                  px: 2,
-                  py: 0.5,
-                  fontSize: "0.875rem",
+                  px: { xs: 1, sm: 2 },
+                  py: { xs: 0.25, sm: 0.5 },
+                  fontSize: { xs: "0.75rem", sm: "0.875rem" },
                   "&:hover": {
                     bgcolor: "rgba(255,255,255,0.1)",
                   },
+                  "& .MuiSvgIcon-root": {
+                    fontSize: { xs: "1rem", sm: "1.25rem" },
+                    mr: { xs: 0.5, sm: 1 },
+                  },
                 }}
               >
-                <LoginIcon sx={{ mr: 1, fontSize: "1.25rem" }} />
-                Login
+                <LoginIcon />
+                <Box
+                  component="span"
+                  sx={{
+                    display: { xs: "none", sm: "inline" },
+                    ml: { xs: 0.5, sm: 1 },
+                  }}
+                >
+                  Login
+                </Box>
               </IconButton>
             </Tooltip>
           )}
@@ -200,7 +253,19 @@ const Navbar = () => {
               <Typography variant="subtitle1" fontWeight="bold">
                 {user?.firstName} {user?.lastName}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography 
+                variant="body2" 
+                color="text.secondary"
+                sx={{
+                  fontSize: {
+                    xs: '0.7rem',  // Extra small screens
+                    sm: '0.75rem', // Small screens
+                    md: '0.875rem' // Medium screens and up
+                  },
+                  wordBreak: 'break-word',
+                  maxWidth: '200px'
+                }}
+              >
                 {user?.email}
               </Typography>
             </Box>
