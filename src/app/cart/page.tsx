@@ -12,6 +12,7 @@ import { RootState } from "@/lib/store";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import RemoveIcon from "@mui/icons-material/Remove";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import {
   Alert,
   Box,
@@ -29,6 +30,7 @@ import {
   Snackbar,
   Typography,
 } from "@mui/material";
+import Link from "next/link";
 import { useState } from "react";
 import {
   DragDropContext,
@@ -169,7 +171,79 @@ const CartPage = () => {
       </Typography>
 
       {items.length === 0 ? (
-        <Typography>Your cart is empty</Typography>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            py: { xs: 4, sm: 6, md: 8 },
+            textAlign: "center",
+          }}
+        >
+          <Box
+            sx={{
+              width: { xs: 80, sm: 100, md: 120 },
+              height: { xs: 80, sm: 100, md: 120 },
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "primary.light",
+              borderRadius: "50%",
+              mb: 3,
+            }}
+          >
+            <ShoppingCartOutlinedIcon
+              sx={{
+                fontSize: { xs: 40, sm: 50, md: 60 },
+                color: "primary.main",
+              }}
+            />
+          </Box>
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 600,
+              mb: 2,
+              fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" },
+            }}
+          >
+            Your Cart is Empty
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              color: "text.secondary",
+              mb: 4,
+              maxWidth: "600px",
+              fontSize: { xs: "0.875rem", sm: "1rem", md: "1.125rem" },
+            }}
+          >
+            Looks like you haven't added any items to your cart yet. Start
+            shopping to discover amazing products!
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            component={Link}
+            href="/"
+            startIcon={<ShoppingCartOutlinedIcon />}
+            sx={{
+              px: { xs: 3, sm: 4 },
+              py: { xs: 1.25, sm: 1.5 },
+              fontSize: { xs: "0.875rem", sm: "1rem" },
+              borderRadius: 2,
+              boxShadow: 2,
+              "&:hover": {
+                boxShadow: 4,
+                backgroundColor: "primary.dark",
+              },
+            }}
+          >
+            Start Shopping
+          </Button>
+        </Box>
       ) : (
         <>
           <DragDropContext onDragEnd={handleDragEnd}>
@@ -443,17 +517,28 @@ const CartPage = () => {
             undone.
           </DialogContentText>
         </DialogContent>
-        <DialogActions sx={{ p: 2 }}>
+        <DialogActions
+          sx={{
+            p: 2,
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            gap: { xs: 1, sm: 2 },
+            "& > *": {
+              width: { xs: "100%", sm: "200px" },
+              m: 0,
+              p: 0,
+            },
+          }}
+        >
           <Button
             onClick={() => setOpenClearDialog(false)}
             color="primary"
             variant="outlined"
             sx={{
-              width: { xs: "100%", sm: "180px", md: "200px" },
               py: { xs: 1.25, sm: 1.5 },
               fontSize: { xs: "0.875rem", sm: "0.9375rem", md: "1rem" },
               fontWeight: 500,
-              mb: { xs: 1, sm: 0 },
+              minWidth: "unset",
             }}
           >
             Cancel
@@ -467,10 +552,10 @@ const CartPage = () => {
               isClearing ? <CircularProgress size={20} /> : <DeleteIcon />
             }
             sx={{
-              width: { xs: "100%", sm: "180px", md: "200px" },
               py: { xs: 1.25, sm: 1.5 },
               fontSize: { xs: "0.875rem", sm: "0.9375rem", md: "1rem" },
               fontWeight: 500,
+              minWidth: "unset",
               "&:hover": {
                 backgroundColor: "error.dark",
               },
