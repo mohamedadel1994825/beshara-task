@@ -527,6 +527,10 @@ const CartPage = () => {
               width: { xs: "100%", sm: "200px" },
               m: 0,
               p: 0,
+              "&.MuiButton-root": {
+                margin: 0,
+                // padding: 0,
+              },
             },
           }}
         >
@@ -538,7 +542,8 @@ const CartPage = () => {
               py: { xs: 1.25, sm: 1.5 },
               fontSize: { xs: "0.875rem", sm: "0.9375rem", md: "1rem" },
               fontWeight: 500,
-              minWidth: "unset",
+              margin: 0,
+              padding: 0,
             }}
           >
             Cancel
@@ -555,7 +560,8 @@ const CartPage = () => {
               py: { xs: 1.25, sm: 1.5 },
               fontSize: { xs: "0.875rem", sm: "0.9375rem", md: "1rem" },
               fontWeight: 500,
-              minWidth: "unset",
+              margin: 0,
+              padding: 0,
               "&:hover": {
                 backgroundColor: "error.dark",
               },
