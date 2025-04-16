@@ -9,6 +9,7 @@ import {
 } from "@/features/cart/cartSlice";
 import { RootState } from "@/lib/store";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import {
   Alert,
   Box,
@@ -22,6 +23,7 @@ import {
   Snackbar,
   Typography,
 } from "@mui/material";
+import Link from "next/link";
 import { useState } from "react";
 import {
   DragDropContext,
@@ -136,7 +138,28 @@ const CartPage = () => {
       </Typography>
 
       {items.length === 0 ? (
-        <Typography>Your cart is empty</Typography>
+        <Card sx={{ p: 4, textAlign: "center", maxWidth: 600, mx: "auto" }}>
+          <Box sx={{ mb: 3 }}>
+            <ShoppingCartIcon sx={{ fontSize: 80, color: "text.secondary" }} />
+          </Box>
+          <Typography variant="h5" gutterBottom>
+            Your Cart is Empty
+          </Typography>
+          <Typography color="text.secondary" paragraph>
+            Looks like you haven't added any items to your cart yet. Start
+            shopping to discover amazing products!
+          </Typography>
+          <Button
+            component={Link}
+            href="/"
+            variant="contained"
+            color="primary"
+            size="large"
+            sx={{ mt: 2 }}
+          >
+            Start Shopping
+          </Button>
+        </Card>
       ) : (
         <>
           <DragDropContext onDragEnd={handleDragEnd}>
