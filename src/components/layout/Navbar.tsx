@@ -24,7 +24,7 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const Navbar = () => {
@@ -34,6 +34,13 @@ const Navbar = () => {
     (state: RootState) => state.auth
   );
   const { items } = useSelector((state: RootState) => state.cart);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const totalItems = items.reduce((total, item) => total + item.quantity, 0);
 
   // Menu state
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -132,21 +139,37 @@ const Navbar = () => {
           {isAuthenticated ? (
             <>
               <Tooltip title="Cart">
-                <IconButton
-                  color="inherit"
-                  component={Link}
-                  href="/cart"
-                  sx={{
-                    p: { xs: 0.5, sm: 1 },
-                    "& .MuiSvgIcon-root": {
-                      fontSize: { xs: "1.1rem", sm: "1.25rem", md: "1.5rem" },
-                    },
-                  }}
-                >
-                  <Badge badgeContent={items.length} color="secondary">
+                {mounted ? (
+                  <IconButton
+                    color="inherit"
+                    component={Link}
+                    href="/cart"
+                    sx={{
+                      p: { xs: 0.5, sm: 1 },
+                      "& .MuiSvgIcon-root": {
+                        fontSize: { xs: "1.1rem", sm: "1.25rem", md: "1.5rem" },
+                      },
+                    }}
+                  >
+                    <Badge badgeContent={totalItems} color="secondary">
+                      <ShoppingCartIcon />
+                    </Badge>
+                  </IconButton>
+                ) : (
+                  <IconButton
+                    color="inherit"
+                    component={Link}
+                    href="/cart"
+                    sx={{
+                      p: { xs: 0.5, sm: 1 },
+                      "& .MuiSvgIcon-root": {
+                        fontSize: { xs: "1.1rem", sm: "1.25rem", md: "1.5rem" },
+                      },
+                    }}
+                  >
                     <ShoppingCartIcon />
-                  </Badge>
-                </IconButton>
+                  </IconButton>
+                )}
               </Tooltip>
               <Tooltip title="Account">
                 <IconButton
@@ -253,17 +276,17 @@ const Navbar = () => {
               <Typography variant="subtitle1" fontWeight="bold">
                 {user?.firstName} {user?.lastName}
               </Typography>
-              <Typography 
-                variant="body2" 
+              <Typography
+                variant="body2"
                 color="text.secondary"
                 sx={{
                   fontSize: {
-                    xs: '0.7rem',  // Extra small screens
-                    sm: '0.75rem', // Small screens
-                    md: '0.875rem' // Medium screens and up
+                    xs: "0.7rem", // Extra small screens
+                    sm: "0.75rem", // Small screens
+                    md: "0.875rem", // Medium screens and up
                   },
-                  wordBreak: 'break-word',
-                  maxWidth: '200px'
+                  wordBreak: "break-word",
+                  maxWidth: "200px",
                 }}
               >
                 {user?.email}
