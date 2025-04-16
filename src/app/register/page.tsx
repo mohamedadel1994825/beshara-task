@@ -1,10 +1,12 @@
 "use client";
 
+import { login } from "@/features/auth/authSlice";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import * as yup from "yup";
 
 interface User {
@@ -15,8 +17,8 @@ interface User {
 }
 
 const schema = yup.object().shape({
-  username: yup.string().required("Username is required"),
   email: yup.string().email("Invalid email").required("Email is required"),
+  username: yup.string().required("Username is required"),
   password: yup
     .string()
     .min(6, "Password must be at least 6 characters")
@@ -29,6 +31,7 @@ const schema = yup.object().shape({
 
 export default function RegisterPage() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [error, setError] = useState("");
 
   const {
@@ -46,13 +49,14 @@ export default function RegisterPage() {
       // Get existing users
       const users: User[] = JSON.parse(localStorage.getItem("users") || "[]");
 
-      // Check if username or email already exists
-      if (users.some((u) => u.username === data.username)) {
-        setError("Username already exists");
-        return;
-      }
+      // Check if email already exists first
       if (users.some((u) => u.email === data.email)) {
         setError("Email already exists");
+        return;
+      }
+      // Then check username
+      if (users.some((u) => u.username === data.username)) {
+        setError("Username already exists");
         return;
       }
 
@@ -68,8 +72,27 @@ export default function RegisterPage() {
       users.push(newUser);
       localStorage.setItem("users", JSON.stringify(users));
 
-      // Redirect to login
-      router.push("/login?registered=true");
+      // Set auth cookie
+      document.cookie = "auth=true; path=/";
+
+      // Dispatch login action
+      dispatch(login(newUser));
+
+      // Check for pending cart item
+      try {
+        const storedItem = sessionStorage.getItem("pendingCartItem");
+        if (storedItem) {
+          const { productId } = JSON.parse(storedItem);
+          sessionStorage.removeItem("pendingCartItem");
+          router.push(`/product/${productId}`);
+          return;
+        }
+      } catch (error) {
+        console.error("Error reading from sessionStorage:", error);
+      }
+
+      // Redirect to home
+      router.push("/");
     } catch (error) {
       console.error("Registration error:", error);
       setError("An error occurred during registration");
@@ -110,20 +133,20 @@ export default function RegisterPage() {
 
         <TextField
           fullWidth
-          label="Username"
-          {...register("username")}
-          error={!!errors.username}
-          helperText={errors.username?.message}
-          sx={{ mb: 2 }}
-        />
-
-        <TextField
-          fullWidth
           label="Email"
           type="email"
           {...register("email")}
           error={!!errors.email}
           helperText={errors.email?.message}
+          sx={{ mb: 2 }}
+        />
+
+        <TextField
+          fullWidth
+          label="Username"
+          {...register("username")}
+          error={!!errors.username}
+          helperText={errors.username?.message}
           sx={{ mb: 2 }}
         />
 

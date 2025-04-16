@@ -3,7 +3,7 @@
 import { login } from "@/features/auth/authSlice";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Alert, Box, Button, TextField, Typography } from "@mui/material";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
@@ -17,16 +17,14 @@ interface User {
 }
 
 const schema = yup.object().shape({
-  username: yup.string().required("Username is required"),
+  email: yup.string().email("Invalid email").required("Email is required"),
   password: yup.string().required("Password is required"),
 });
 
 export default function LoginPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const dispatch = useDispatch();
   const [error, setError] = useState("");
-  const [showRegistrationSuccess, setShowRegistrationSuccess] = useState(false);
   const [pendingCartItem, setPendingCartItem] = useState<{
     id: number;
     returnTo: string;
@@ -41,11 +39,6 @@ export default function LoginPage() {
   });
 
   useEffect(() => {
-    // Check for registration success
-    if (searchParams.get("registered") === "true") {
-      setShowRegistrationSuccess(true);
-    }
-
     // Check for pending cart item
     try {
       const storedItem = sessionStorage.getItem("pendingCartItem");
@@ -56,15 +49,14 @@ export default function LoginPage() {
     } catch (error) {
       console.error("Error reading from sessionStorage:", error);
     }
-  }, [searchParams]);
+  }, []);
 
-  const onSubmit = async (data: { username: string; password: string }) => {
+  const onSubmit = async (data: { email: string; password: string }) => {
     try {
       // Check if user exists in localStorage
       const users: User[] = JSON.parse(localStorage.getItem("users") || "[]");
       const user = users.find(
-        (u: User) =>
-          u.username === data.username && u.password === data.password
+        (u: User) => u.email === data.email && u.password === data.password
       );
 
       if (user) {
@@ -78,11 +70,10 @@ export default function LoginPage() {
         if (pendingCartItem) {
           router.push(`/product/${pendingCartItem.id}`);
         } else {
-          const from = searchParams.get("from");
-          router.push(from || "/");
+          router.push("/");
         }
       } else {
-        setError("Invalid username or password");
+        setError("Invalid email or password");
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -116,12 +107,6 @@ export default function LoginPage() {
           Login
         </Typography>
 
-        {showRegistrationSuccess && (
-          <Alert severity="success" sx={{ mb: 2 }}>
-            Registration successful! Please log in with your credentials.
-          </Alert>
-        )}
-
         {pendingCartItem && (
           <Alert severity="info" sx={{ mb: 2 }}>
             Please log in to add items to your cart
@@ -136,10 +121,11 @@ export default function LoginPage() {
 
         <TextField
           fullWidth
-          label="Username"
-          {...register("username")}
-          error={!!errors.username}
-          helperText={errors.username?.message}
+          label="Email"
+          type="email"
+          {...register("email")}
+          error={!!errors.email}
+          helperText={errors.email?.message}
           sx={{ mb: 2 }}
         />
 
