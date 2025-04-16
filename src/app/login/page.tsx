@@ -21,14 +21,7 @@ const LoginPage = () => {
 
         <LoginForm onSuccess={handleLoginSuccess} />
 
-        <Box sx={{ mt: 3, textAlign: "center" }}>
-          <Typography variant="body2" color="text.secondary">
-            Don't have an account?{" "}
-            <Link href="/register" style={{ color: "primary.main" }}>
-              Register here
-            </Link>
-          </Typography>
-        </Box>
+      
       </Paper>
     </Box>
   );
