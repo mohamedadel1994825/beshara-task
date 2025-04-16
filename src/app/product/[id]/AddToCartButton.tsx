@@ -185,7 +185,9 @@ export default function AddToCartButton({ product }: Props) {
           )
         }
         sx={{
-          mt: 2,
+          minWidth: "120px",
+          whiteSpace: "nowrap",
+          height: "40px",
           transition: "all 0.3s ease",
           transform: isAdding ? "scale(0.95)" : "scale(1)",
           opacity: isAdding ? 0.7 : 1,

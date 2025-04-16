@@ -120,15 +120,27 @@ const CategoryAccordion = ({
                     <Typography variant="h6" color="primary">
                       ${product.price}
                     </Typography>
-                    <Box sx={{ mt: 2, display: "flex", gap: 1 }}>
-                      <Box sx={{ width: "55%" }}>
+                    <Box
+                      sx={{
+                        mt: 2,
+                        display: "flex",
+                        gap: 1,
+                        alignItems: "center",
+                      }}
+                    >
+                      <Box sx={{ width: "45%" }}>
                         <AddToCartButton product={product} />
                       </Box>
-                      <Box sx={{ width: "45%" }}>
+                      <Box sx={{ width: "55%" }}>
                         <Button
                           variant="outlined"
                           onClick={() => handleProductClick(product.id)}
                           fullWidth
+                          sx={{
+                            minWidth: "120px",
+                            whiteSpace: "nowrap",
+                            height: "40px",
+                          }}
                         >
                           View Details
                         </Button>
