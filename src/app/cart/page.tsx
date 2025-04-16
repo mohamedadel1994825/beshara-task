@@ -4,11 +4,14 @@ import {
   clearCart,
   removeItem,
   reorderItems,
+  updateQuantity,
   useClearCartMutation,
   useRemoveFromCartMutation,
 } from "@/features/cart/cartSlice";
 import { RootState } from "@/lib/store";
+import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import RemoveIcon from "@mui/icons-material/Remove";
 import {
   Alert,
   Box,
@@ -134,6 +137,31 @@ const CartPage = () => {
     return items.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
+  const handleQuantityChange = async (id: number, newQuantity: number) => {
+    try {
+      if (process.env.NODE_ENV === "production") {
+        // In production, we would call an API to update the quantity
+        // For now, we'll just update the local state
+        dispatch(updateQuantity({ id, quantity: newQuantity }));
+      } else {
+        dispatch(updateQuantity({ id, quantity: newQuantity }));
+      }
+
+      setToast({
+        open: true,
+        message: "Quantity updated",
+        severity: "success",
+      });
+    } catch (error) {
+      console.error("Failed to update quantity:", error);
+      setToast({
+        open: true,
+        message: "Failed to update quantity. Please try again.",
+        severity: "error",
+      });
+    }
+  };
+
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom>
@@ -214,8 +242,63 @@ const CartPage = () => {
                                 <Typography variant="h6">
                                   {item.title}
                                 </Typography>
-                                <Typography color="primary">
-                                  ${item.price} x {item.quantity}
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1,
+                                    mt: 1,
+                                  }}
+                                >
+                                  <IconButton
+                                    size="small"
+                                    onClick={() =>
+                                      handleQuantityChange(
+                                        item.id,
+                                        item.quantity - 1
+                                      )
+                                    }
+                                    disabled={item.quantity <= 1}
+                                    sx={{
+                                      border: "1px solid",
+                                      borderColor: "primary.main",
+                                      "&:hover": {
+                                        backgroundColor: "primary.light",
+                                      },
+                                    }}
+                                  >
+                                    <RemoveIcon fontSize="small" />
+                                  </IconButton>
+                                  <Typography
+                                    variant="body1"
+                                    sx={{
+                                      minWidth: "24px",
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    {item.quantity}
+                                  </Typography>
+                                  <IconButton
+                                    size="small"
+                                    onClick={() =>
+                                      handleQuantityChange(
+                                        item.id,
+                                        item.quantity + 1
+                                      )
+                                    }
+                                    sx={{
+                                      border: "1px solid",
+                                      borderColor: "primary.main",
+                                      "&:hover": {
+                                        backgroundColor: "primary.light",
+                                      },
+                                    }}
+                                  >
+                                    <AddIcon fontSize="small" />
+                                  </IconButton>
+                                </Box>
+                                <Typography color="primary" sx={{ mt: 1 }}>
+                                  ${item.price} each
                                 </Typography>
                               </Grid>
                               <Grid item xs={12} sm={3}>

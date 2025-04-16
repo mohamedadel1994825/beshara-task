@@ -1,15 +1,18 @@
 "use client";
 
-import { addItem } from "@/features/cart/cartSlice";
+import { addItem, updateQuantity } from "@/features/cart/cartSlice";
 import { RootState } from "@/lib/store";
+import AddIcon from "@mui/icons-material/Add";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import LoginIcon from "@mui/icons-material/Login";
+import RemoveIcon from "@mui/icons-material/Remove";
 import {
   Alert,
   Box,
   Button,
   Fade,
+  IconButton,
   Snackbar,
   Typography,
   Zoom,
@@ -106,6 +109,31 @@ export default function AddToCartButton({ product }: Props) {
     }, 1000);
   };
 
+  const handleQuantityChange = async (newQuantity: number) => {
+    try {
+      if (process.env.NODE_ENV === "production") {
+        // In production, we would call an API to update the quantity
+        // For now, we'll just update the local state
+        dispatch(updateQuantity({ id: product.id, quantity: newQuantity }));
+      } else {
+        dispatch(updateQuantity({ id: product.id, quantity: newQuantity }));
+      }
+
+      setToast({
+        open: true,
+        message: "Quantity updated",
+        severity: "success",
+      });
+    } catch (error) {
+      console.error("Failed to update quantity:", error);
+      setToast({
+        open: true,
+        message: "Failed to update quantity. Please try again.",
+        severity: "error",
+      });
+    }
+  };
+
   useEffect(() => {
     if (isRedirecting) {
       const timer = setTimeout(() => {
@@ -164,6 +192,45 @@ export default function AddToCartButton({ product }: Props) {
       setAnimationComplete(true);
     }, 800);
   };
+
+  if (isInCart) {
+    const cartItem = cartItems.find((item) => item.id === product.id);
+    if (cartItem) {
+      return (
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <IconButton
+            size="small"
+            onClick={() => handleQuantityChange(cartItem.quantity - 1)}
+            disabled={cartItem.quantity <= 1}
+            sx={{
+              border: "1px solid",
+              borderColor: "primary.main",
+              "&:hover": { backgroundColor: "primary.light" },
+            }}
+          >
+            <RemoveIcon fontSize="small" />
+          </IconButton>
+          <Typography
+            variant="body1"
+            sx={{ minWidth: "24px", textAlign: "center" }}
+          >
+            {cartItem.quantity}
+          </Typography>
+          <IconButton
+            size="small"
+            onClick={() => handleQuantityChange(cartItem.quantity + 1)}
+            sx={{
+              border: "1px solid",
+              borderColor: "primary.main",
+              "&:hover": { backgroundColor: "primary.light" },
+            }}
+          >
+            <AddIcon fontSize="small" />
+          </IconButton>
+        </Box>
+      );
+    }
+  }
 
   return (
     <>
