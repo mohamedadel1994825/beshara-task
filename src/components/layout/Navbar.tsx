@@ -3,7 +3,6 @@
 import { logout } from "@/features/auth/authSlice";
 import { RootState } from "@/lib/store";
 import EmailIcon from "@mui/icons-material/Email";
-import HowToRegIcon from "@mui/icons-material/HowToReg";
 import InfoIcon from "@mui/icons-material/Info";
 import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -127,120 +126,89 @@ const Navbar = () => {
             </>
           ) : (
             /* Non-logged-in user section */
-            <Tooltip title="Login/Register">
-              <IconButton
-                color="inherit"
-                onClick={handleMenuOpen}
-                sx={{
-                  ml: 1,
+            <IconButton
+              color="inherit"
+              component={Link}
+              href="/login"
+              sx={{
+                ml: 1,
+                border: "1px solid rgba(255,255,255,0.3)",
+                borderRadius: 1,
+                px: 2,
+                py: 0.5,
+                fontSize: "0.875rem",
+                "&:hover": {
                   bgcolor: "rgba(255,255,255,0.1)",
-                  "&:hover": {
-                    bgcolor: "rgba(255,255,255,0.2)",
-                  },
-                }}
-              >
-                <PersonIcon />
-              </IconButton>
-            </Tooltip>
+                },
+              }}
+            >
+              <LoginIcon sx={{ mr: 1, fontSize: "1.25rem" }} />
+              Login
+            </IconButton>
           )}
         </Box>
 
-        {/* User account menu - includes login/register options for guests */}
-        <Menu
-          anchorEl={anchorEl}
-          id="account-menu"
-          open={open}
-          onClose={handleMenuClose}
-          transformOrigin={{ horizontal: "right", vertical: "top" }}
-          anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-          PaperProps={{
-            elevation: 0,
-            sx: {
-              overflow: "visible",
-              filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-              mt: 1.5,
-              width: 200,
-              "&:before": {
-                content: '""',
-                display: "block",
-                position: "absolute",
-                top: 0,
-                right: 14,
-                width: 10,
-                height: 10,
-                bgcolor: "background.paper",
-                transform: "translateY(-50%) rotate(45deg)",
-                zIndex: 0,
+        {/* User account menu - only for logged-in users */}
+        {isAuthenticated && (
+          <Menu
+            anchorEl={anchorEl}
+            id="account-menu"
+            open={open}
+            onClose={handleMenuClose}
+            transformOrigin={{ horizontal: "right", vertical: "top" }}
+            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+            PaperProps={{
+              elevation: 0,
+              sx: {
+                overflow: "visible",
+                filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                mt: 1.5,
+                width: 200,
+                "&:before": {
+                  content: '""',
+                  display: "block",
+                  position: "absolute",
+                  top: 0,
+                  right: 14,
+                  width: 10,
+                  height: 10,
+                  bgcolor: "background.paper",
+                  transform: "translateY(-50%) rotate(45deg)",
+                  zIndex: 0,
+                },
               },
-            },
-          }}
-        >
-          {isAuthenticated ? (
-            <>
-              <Box sx={{ px: 2, py: 1 }}>
-                <Typography variant="subtitle1" fontWeight="bold">
-                  {user?.firstName} {user?.lastName}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {user?.email}
-                </Typography>
-              </Box>
-              <Divider />
-              <MenuItem onClick={() => navigateTo("/profile")}>
-                <ListItemIcon>
-                  <PersonIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Profile</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={() => navigateTo("/cart")}>
-                <ListItemIcon>
-                  <ShoppingCartIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>My Cart</ListItemText>
-              </MenuItem>
-              <Divider />
-              <MenuItem onClick={handleLogout}>
-                <ListItemIcon>
-                  <LogoutIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Logout</ListItemText>
-              </MenuItem>
-            </>
-          ) : (
-            <>
-              <Box sx={{ p: 2, bgcolor: "primary.main" }}>
-                <Typography variant="subtitle1" fontWeight="bold" color="white">
-                  Account
-                </Typography>
-                <Typography variant="body2" color="white" sx={{ opacity: 0.9 }}>
-                  Please login or register
-                </Typography>
-              </Box>
-              <MenuItem
-                component={Link}
-                href="/login"
-                onClick={handleMenuClose}
-                sx={{ py: 1.5 }}
-              >
-                <ListItemIcon>
-                  <LoginIcon fontSize="small" color="primary" />
-                </ListItemIcon>
-                <ListItemText primary="Login" />
-              </MenuItem>
-              <MenuItem
-                component={Link}
-                href="/register"
-                onClick={handleMenuClose}
-                sx={{ py: 1.5 }}
-              >
-                <ListItemIcon>
-                  <HowToRegIcon fontSize="small" color="secondary" />
-                </ListItemIcon>
-                <ListItemText primary="Register" />
-              </MenuItem>
-            </>
-          )}
-        </Menu>
+            }}
+          >
+            <Box sx={{ px: 2, py: 1 }}>
+              <Typography variant="subtitle1" fontWeight="bold">
+                {user?.firstName} {user?.lastName}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {user?.email}
+              </Typography>
+            </Box>
+            <Divider />
+            <MenuItem onClick={() => navigateTo("/profile")}>
+              <ListItemIcon>
+                <PersonIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Profile</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={() => navigateTo("/cart")}>
+              <ListItemIcon>
+                <ShoppingCartIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>My Cart</ListItemText>
+            </MenuItem>
+            <Divider />
+            <MenuItem onClick={handleLogout}>
+              <ListItemIcon>
+                <LogoutIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Logout</ListItemText>
+            </MenuItem>
+          </Menu>
+        )}
       </Toolbar>
     </AppBar>
   );
