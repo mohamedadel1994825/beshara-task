@@ -32,20 +32,182 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { useState } from "react";
-import {
-  DragDropContext,
-  Draggable,
-  Droppable,
-  DropResult,
-} from "react-beautiful-dnd";
 import { useDispatch, useSelector } from "react-redux";
+
+// Import dnd-kit components
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
+// Sortable Cart Item Component
+const SortableCartItem = ({ item, onRemove, onQuantityChange, removingItemId }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id.toString() });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.8 : 1,
+    zIndex: isDragging ? 1 : 0,
+  };
+
+  return (
+    <Card
+      ref={setNodeRef}
+      style={style}
+      sx={{
+        mb: 2,
+        boxShadow: isDragging ? 3 : 1,
+        cursor: isDragging ? "grabbing" : "grab",
+      }}
+      {...attributes}
+      {...listeners}
+    >
+      <CardContent>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} sm={3}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "background.paper",
+                p: 1,
+                borderRadius: 1,
+                height: {
+                  xs: "100px",
+                  sm: "120px",
+                  md: "140px",
+                },
+                "& img": {
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  objectFit: "contain",
+                  borderRadius: 1,
+                },
+              }}
+            >
+              <img src={item.image} alt={item.title} />
+            </Box>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Typography variant="h6">{item.title}</Typography>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                mt: 1,
+              }}
+            >
+              <IconButton
+                size="small"
+                onClick={() => onQuantityChange(item.id, item.quantity - 1)}
+                disabled={item.quantity <= 1}
+                sx={{
+                  border: "1px solid",
+                  borderColor: "primary.main",
+                  "&:hover": {
+                    backgroundColor: "primary.light",
+                  },
+                }}
+              >
+                <RemoveIcon fontSize="small" />
+              </IconButton>
+              <Typography
+                variant="body1"
+                sx={{
+                  minWidth: "24px",
+                  textAlign: "center",
+                }}
+              >
+                {item.quantity}
+              </Typography>
+              <IconButton
+                size="small"
+                onClick={() => onQuantityChange(item.id, item.quantity + 1)}
+                sx={{
+                  border: "1px solid",
+                  borderColor: "primary.main",
+                  "&:hover": {
+                    backgroundColor: "primary.light",
+                  },
+                }}
+              >
+                <AddIcon fontSize="small" />
+              </IconButton>
+            </Box>
+            <Typography color="primary" sx={{ mt: 1 }}>
+              ${item.price} each
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="h6" sx={{ mr: 2 }}>
+                ${(item.price * item.quantity).toFixed(2)}
+              </Typography>
+              <IconButton
+                color="error"
+                onClick={() => onRemove(item.id)}
+                disabled={removingItemId === item.id}
+              >
+                {removingItemId === item.id ? (
+                  <CircularProgress size={24} color="error" />
+                ) : (
+                  <DeleteIcon />
+                )}
+              </IconButton>
+            </Box>
+          </Grid>
+        </Grid>
+      </CardContent>
+    </Card>
+  );
+};
 
 const CartPage = () => {
   const dispatch = useDispatch();
   const { items } = useSelector((state: RootState) => state.cart);
-  const [removeFromCart, { isLoading: isRemoving }] =
-    useRemoveFromCartMutation();
+  const [removeFromCart, { isLoading: isRemoving }] = useRemoveFromCartMutation();
   const [clearCartMutation, { isLoading: isClearing }] = useClearCartMutation();
+
+  // Set up sensors for drag and drop
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // Minimum distance before drag starts (prevents accidental drags)
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   // State for item being removed
   const [removingItemId, setRemovingItemId] = useState<number | null>(null);
@@ -67,20 +229,23 @@ const CartPage = () => {
     setToast({ ...toast, open: false });
   };
 
-  const handleDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
 
-    const reorderedItems = Array.from(items);
-    const [removed] = reorderedItems.splice(result.source.index, 1);
-    reorderedItems.splice(result.destination.index, 0, removed);
+    if (over && active.id !== over.id) {
+      const oldIndex = items.findIndex(item => item.id.toString() === active.id);
+      const newIndex = items.findIndex(item => item.id.toString() === over.id);
+      
+      const reorderedItems = arrayMove(items, oldIndex, newIndex);
+      
+      dispatch(reorderItems(reorderedItems));
 
-    dispatch(reorderItems(reorderedItems));
-
-    setToast({
-      open: true,
-      message: "Cart items reordered successfully",
-      severity: "success",
-    });
+      setToast({
+        open: true,
+        message: "Cart items reordered successfully",
+        severity: "success",
+      });
+    }
   };
 
   const handleRemoveItem = async (id: number) => {
@@ -151,7 +316,7 @@ const CartPage = () => {
 
       setToast({
         open: true,
-        message: "Quantity updated",
+        message: `Quantity updated to ${newQuantity}`,
         severity: "success",
       });
     } catch (error) {
@@ -246,172 +411,32 @@ const CartPage = () => {
         </Box>
       ) : (
         <>
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable
-              droppableId="cart-items"
-              isDropDisabled={false}
-              isCombineEnabled={false}
+          <DndContext 
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext 
+              items={items.map(item => item.id.toString())}
+              strategy={verticalListSortingStrategy}
             >
-              {(provided, snapshot) => (
-                <Box
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  sx={{
-                    backgroundColor: snapshot.isDraggingOver
-                      ? "rgba(0, 0, 0, 0.02)"
-                      : "transparent",
-                    transition: "background-color 0.2s ease",
-                  }}
-                >
-                  {items.map((item, index) => (
-                    <Draggable
-                      key={item.id}
-                      draggableId={item.id.toString()}
-                      index={index}
-                      isDragDisabled={false}
-                    >
-                      {(provided, snapshot) => (
-                        <Card
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          sx={{
-                            mb: 2,
-                            transform: snapshot.isDragging
-                              ? "scale(1.02)"
-                              : "none",
-                            transition: "transform 0.2s ease",
-                            boxShadow: snapshot.isDragging ? 3 : 1,
-                          }}
-                        >
-                          <CardContent>
-                            <Grid container spacing={2} alignItems="center">
-                              <Grid item xs={12} sm={3}>
-                                <Box
-                                  sx={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    backgroundColor: "background.paper",
-                                    p: 1,
-                                    borderRadius: 1,
-                                    height: {
-                                      xs: "100px",
-                                      sm: "120px",
-                                      md: "140px",
-                                    },
-                                    "& img": {
-                                      maxWidth: "100%",
-                                      maxHeight: "100%",
-                                      objectFit: "contain",
-                                      borderRadius: 1,
-                                    },
-                                  }}
-                                >
-                                  <img src={item.image} alt={item.title} />
-                                </Box>
-                              </Grid>
-                              <Grid item xs={12} sm={6}>
-                                <Typography variant="h6">
-                                  {item.title}
-                                </Typography>
-                                <Box
-                                  sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 1,
-                                    mt: 1,
-                                  }}
-                                >
-                                  <IconButton
-                                    size="small"
-                                    onClick={() =>
-                                      handleQuantityChange(
-                                        item.id,
-                                        item.quantity - 1
-                                      )
-                                    }
-                                    disabled={item.quantity <= 1}
-                                    sx={{
-                                      border: "1px solid",
-                                      borderColor: "primary.main",
-                                      "&:hover": {
-                                        backgroundColor: "primary.light",
-                                      },
-                                    }}
-                                  >
-                                    <RemoveIcon fontSize="small" />
-                                  </IconButton>
-                                  <Typography
-                                    variant="body1"
-                                    sx={{
-                                      minWidth: "24px",
-                                      textAlign: "center",
-                                    }}
-                                  >
-                                    {item.quantity}
-                                  </Typography>
-                                  <IconButton
-                                    size="small"
-                                    onClick={() =>
-                                      handleQuantityChange(
-                                        item.id,
-                                        item.quantity + 1
-                                      )
-                                    }
-                                    sx={{
-                                      border: "1px solid",
-                                      borderColor: "primary.main",
-                                      "&:hover": {
-                                        backgroundColor: "primary.light",
-                                      },
-                                    }}
-                                  >
-                                    <AddIcon fontSize="small" />
-                                  </IconButton>
-                                </Box>
-                                <Typography color="primary" sx={{ mt: 1 }}>
-                                  ${item.price} each
-                                </Typography>
-                              </Grid>
-                              <Grid item xs={12} sm={3}>
-                                <Box
-                                  sx={{
-                                    display: "flex",
-                                    justifyContent: "flex-end",
-                                    alignItems: "center",
-                                  }}
-                                >
-                                  <Typography variant="h6" sx={{ mr: 2 }}>
-                                    ${(item.price * item.quantity).toFixed(2)}
-                                  </Typography>
-                                  <IconButton
-                                    color="error"
-                                    onClick={() => handleRemoveItem(item.id)}
-                                    disabled={removingItemId === item.id}
-                                  >
-                                    {removingItemId === item.id ? (
-                                      <CircularProgress
-                                        size={24}
-                                        color="error"
-                                      />
-                                    ) : (
-                                      <DeleteIcon />
-                                    )}
-                                  </IconButton>
-                                </Box>
-                              </Grid>
-                            </Grid>
-                          </CardContent>
-                        </Card>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </Box>
-              )}
-            </Droppable>
-          </DragDropContext>
+              <Box
+                sx={{
+                  transition: "background-color 0.2s ease",
+                }}
+              >
+                {items.map((item) => (
+                  <SortableCartItem
+                    key={item.id}
+                    item={item}
+                    onRemove={handleRemoveItem}
+                    onQuantityChange={handleQuantityChange}
+                    removingItemId={removingItemId}
+                  />
+                ))}
+              </Box>
+            </SortableContext>
+          </DndContext>
 
           {items.length > 0 && (
             <Box
@@ -528,7 +553,6 @@ const CartPage = () => {
               p: 0,
               "&.MuiButton-root": {
                 margin: 0,
-                // padding: 0,
               },
             },
           }}
