@@ -1,5 +1,6 @@
+// CategoryAccordion.tsx
 import AddToCartButton from "@/app/product/[id]/components/AddToCartButton";
-import { useGetProductsByCategoryQuery } from "@/services/productsApi"; // <-- RTK hook
+import { useGetProductsByCategoryQuery } from "@/services/productsApi";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Accordion,
@@ -92,67 +93,74 @@ const CategoryAccordion = ({
                       }}
                     />
                   </Box>
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography
-                      gutterBottom
-                      variant="h6"
-                      component="div"
-                      noWrap
-                    >
-                      {product.title}
-                    </Typography>
-                    <Typography variant="h6" color="primary">
-                      ${product.price}
-                    </Typography>
+                  <CardContent sx={{ p: 0, m: 0 }}>
+                    <Box sx={{ p: 1.5, m: 0 }}>
+                      <Typography
+                        gutterBottom
+                        variant="h6"
+                        component="div"
+                        noWrap
+                      >
+                        {product.title}
+                      </Typography>
+                      <Typography variant="h6" color="primary">
+                        ${product.price}
+                      </Typography>
+                    </Box>
                     <Box
                       sx={{
                         display: "flex",
-                        gap: { xs: 1, sm: 2 },
-                        mt: { xs: 1, sm: 2 },
+                        gap: 2,
+                        mt: 2,
                         flexDirection: { xs: "column", sm: "row" },
                         width: "100%",
                         alignItems: "stretch",
+                        height: { xs: "auto", sm: "40px" },
+                        justifyContent: "center",
+                        // px: 2,
                       }}
                     >
-                      <AddToCartButton
-                        product={product}
+                      <Box
                         sx={{
-                          width: { xs: "100%", sm: "45%" },
-                          py: { xs: 1, sm: 1.25 },
-                          fontSize: {
-                            xs: "0.75rem",
-                            sm: "0.875rem",
-                            md: "1rem",
-                          },
-                          height: { xs: "36px", sm: "40px" },
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      />
-                      <Button
-                        variant="outlined"
-                        color="primary"
-                        component={Link}
-                        href={`/product/${product.id}`}
-                        sx={{
-                          width: { xs: "100%", sm: "55%" },
-                          py: { xs: 1, sm: 1.25 },
-                          fontSize: {
-                            xs: "0.75rem",
-                            sm: "0.875rem",
-                            md: "1rem",
-                          },
-                          height: { xs: "36px", sm: "40px" },
-                          whiteSpace: "nowrap",
-                          minWidth: { xs: "120px", sm: "140px" },
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
+                          width: { xs: "93%", sm: "43%" },
+                          height: "100%",
+                          alignSelf: "center",
+                          // px: { xs: 2, sm: 1 }, // Padding for smaller screens
                         }}
                       >
-                        View Details
-                      </Button>
+                        <AddToCartButton product={product} />
+                      </Box>
+
+                      <Box
+                        sx={{
+                          width: { xs: "93%", sm: "43%" },
+                          height: "100%",
+                          alignSelf: "center",
+
+                          // px: { xs: 2, sm: 1 }, // Padding for smaller screens
+                        }}
+                      >
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          component={Link}
+                          href={`/product/${product.id}`}
+                          sx={{
+                            width: "100%",
+                            height: "100%",
+                            minHeight: { xs: "36px", sm: "40px" },
+                            fontSize: {
+                              xs: "0.75rem",
+                              sm: "0.75rem",
+                              md: "0.875rem",
+                            },
+                            py: 1, // Padding for button content
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          View Details
+                        </Button>
+                      </Box>
                     </Box>
                   </CardContent>
                 </Card>

@@ -1,3 +1,4 @@
+// AddToCartButton.tsx
 "use client";
 
 import { RootState } from "@/store";
@@ -78,8 +79,8 @@ export default function AddToCartButton({ product }: Props) {
         price: product.price,
         image: product.image,
         quantity: 1,
-        description: product?.description, // Add missing property
-        category: product?.category, // Add missing property
+        description: product?.description,
+        category: product?.category,
         rating: product?.rating,
       })
     );
@@ -180,11 +181,12 @@ export default function AddToCartButton({ product }: Props) {
       {isInCart && cartItem ? (
         <Box
           sx={{
+            p: 0, m: 0,
             display: "flex",
             alignItems: "center",
-            gap: { xs: 0.5, sm: 1 },
             width: "100%",
-            justifyContent: "center",
+            height: "100%",
+            minHeight: { xs: "36px", sm: "40px" },
           }}
         >
           <IconButton
@@ -195,11 +197,13 @@ export default function AddToCartButton({ product }: Props) {
               border: "1px solid",
               borderColor: "primary.main",
               "&:hover": { backgroundColor: "primary.light" },
-              width: { xs: "32px", sm: "36px" },
-              height: { xs: "32px", sm: "36px" },
+              width: { xs: "28px", sm: "32px" },
+              height: { xs: "28px", sm: "32px" },
+              padding: 0,
               "& .MuiSvgIcon-root": {
-                fontSize: { xs: "1rem", sm: "1.25rem" },
+                fontSize: { xs: "0.875rem", sm: "1rem" },
               },
+              mx: 0.5,
             }}
           >
             <RemoveIcon />
@@ -207,7 +211,7 @@ export default function AddToCartButton({ product }: Props) {
           <Typography
             variant="body1"
             sx={{
-              minWidth: { xs: "32px", sm: "40px" },
+              minWidth: { xs: "28px", sm: "32px" },
               textAlign: "center",
               fontSize: { xs: "0.875rem", sm: "1rem" },
               fontWeight: 500,
@@ -222,11 +226,13 @@ export default function AddToCartButton({ product }: Props) {
               border: "1px solid",
               borderColor: "primary.main",
               "&:hover": { backgroundColor: "primary.light" },
-              width: { xs: "32px", sm: "36px" },
-              height: { xs: "32px", sm: "36px" },
+              width: { xs: "28px", sm: "32px" },
+              height: { xs: "28px", sm: "32px" },
+              padding: 0,
               "& .MuiSvgIcon-root": {
-                fontSize: { xs: "1rem", sm: "1.25rem" },
+                fontSize: { xs: "0.875rem", sm: "1rem" },
               },
+              mx: 0.5,
             }}
           >
             <AddIcon />
@@ -234,6 +240,7 @@ export default function AddToCartButton({ product }: Props) {
         </Box>
       ) : (
         <Button
+          ref={buttonRef}
           variant="contained"
           color="primary"
           onClick={handleAddToCart}
@@ -241,12 +248,16 @@ export default function AddToCartButton({ product }: Props) {
           startIcon={isAdding ? <LoginIcon /> : <AddShoppingCartIcon />}
           sx={{
             width: "100%",
-            py: 1.25,
-            fontSize: { xs: "0.75rem", sm: "0.875rem", md: "1rem" },
-            height: { xs: "36px", sm: "40px" },
+            minHeight: { xs: "36px", sm: "40px" },
+            fontSize: { xs: "0.75rem", sm: "0.75rem", md: "0.875rem" },
+            whiteSpace: "nowrap",
+            py: 0,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            "& .MuiButton-startIcon": {
+              mr: { xs: 0.5, sm: 1 },
+            },
           }}
         >
           {isAdding ? "Adding..." : "Add to Cart"}
