@@ -1,24 +1,32 @@
 // src/pages/cart/index.tsx or src/app/cart/page.tsx (for Next.js App Router)
 "use client";
 
-import React, { useState } from "react";
-import { Box, Typography, Snackbar, Alert } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
 import { DragEndEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
+import { Alert, Box, Snackbar, Typography } from "@mui/material";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import EmptyCart from "@/components/cart/EmptyCart";
-import SortableCartList from "@/components/cart/SortableCartList";
 import CartSummary from "@/components/cart/CartSummary";
 import ClearCartDialog from "@/components/cart/ClearCartDialog";
-import { ToastState } from "@/types/cart";
+import EmptyCart from "@/components/cart/EmptyCart";
+import SortableCartList from "@/components/cart/SortableCartList";
 import { RootState } from "@/store";
-import { clearCart, removeItem, reorderItems, updateQuantity, useClearCartMutation, useRemoveFromCartMutation } from "@/store/slices/cartSlice";
+import {
+  clearCart,
+  removeItem,
+  reorderItems,
+  updateQuantity,
+  useClearCartMutation,
+  useRemoveFromCartMutation,
+} from "@/store/slices/cartSlice";
+import { ToastState } from "@/types/cart";
 
 const CartPage: React.FC = () => {
   const dispatch = useDispatch();
   const { items } = useSelector((state: RootState) => state.cart);
-  const [removeFromCart, { isLoading: isRemoving }] = useRemoveFromCartMutation();
+  const [removeFromCart, { isLoading: isRemoving }] =
+    useRemoveFromCartMutation();
   const [clearCartMutation, { isLoading: isClearing }] = useClearCartMutation();
 
   // State for item being removed
@@ -41,11 +49,15 @@ const CartPage: React.FC = () => {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      const oldIndex = items.findIndex(item => item.id.toString() === active.id);
-      const newIndex = items.findIndex(item => item.id.toString() === over.id);
-      
+      const oldIndex = items.findIndex(
+        (item) => item.id.toString() === active.id
+      );
+      const newIndex = items.findIndex(
+        (item) => item.id.toString() === over.id
+      );
+
       const reorderedItems = arrayMove(items, oldIndex, newIndex);
-      
+
       dispatch(reorderItems(reorderedItems));
 
       setToast({
@@ -60,13 +72,13 @@ const CartPage: React.FC = () => {
     setRemovingItemId(id);
     try {
       // Try to use API in production
-      if (process.env.NODE_ENV === "production") {
-        await removeFromCart(id).unwrap();
-      } else {
-        // Use local state in development
-        dispatch(removeItem(id));
-      }
-
+      // if (process.env.NODE_ENV === "production") {
+      //   await removeFromCart(id).unwrap();
+      // } else {
+      //   // Use local state in development
+      //   dispatch(removeItem(id));
+      // }
+      dispatch(removeItem(id));
       setToast({
         open: true,
         message: "Item removed from cart",
@@ -86,11 +98,12 @@ const CartPage: React.FC = () => {
 
   const handleClearCart = async () => {
     try {
-      if (process.env.NODE_ENV === "production") {
-        await clearCartMutation("").unwrap();
-      } else {
-        dispatch(clearCart());
-      }
+      // if (process.env.NODE_ENV === "production") {
+      //   await clearCartMutation("").unwrap();
+      // } else {
+      //   dispatch(clearCart());
+      // }
+      dispatch(clearCart());
       setToast({
         open: true,
         message: "Cart cleared successfully",
@@ -110,12 +123,13 @@ const CartPage: React.FC = () => {
 
   const handleQuantityChange = async (id: number, newQuantity: number) => {
     try {
-      if (process.env.NODE_ENV === "production") {
-        // In production, we would call an API to update the quantity
-        dispatch(updateQuantity({ id, quantity: newQuantity }));
-      } else {
-        dispatch(updateQuantity({ id, quantity: newQuantity }));
-      }
+      // if (process.env.NODE_ENV === "production") {
+      //   // In production, we would call an API to update the quantity
+      //   dispatch(updateQuantity({ id, quantity: newQuantity }));
+      // } else {
+      //   dispatch(updateQuantity({ id, quantity: newQuantity }));
+      // }
+      dispatch(updateQuantity({ id, quantity: newQuantity }));
 
       setToast({
         open: true,

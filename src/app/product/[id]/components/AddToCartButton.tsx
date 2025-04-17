@@ -98,11 +98,12 @@ export default function AddToCartButton({ product }: Props) {
 
   const handleQuantityChange = async (newQuantity: number) => {
     try {
-      if (process.env.NODE_ENV === "production") {
-        await updateQuantity({ id: product.id, quantity: newQuantity });
-      } else {
-        dispatch(updateQuantity({ id: product.id, quantity: newQuantity }));
-      }
+      // if (process.env.NODE_ENV === "production") {
+      //   await updateQuantity({ id: product.id, quantity: newQuantity });
+      // } else {
+      //   dispatch(updateQuantity({ id: product.id, quantity: newQuantity }));
+      // }
+      dispatch(updateQuantity({ id: product.id, quantity: newQuantity }));
 
       setToast({
         open: true,
