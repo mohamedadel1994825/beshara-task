@@ -17,10 +17,6 @@ export default function HomePage() {
   return (
     <Box>
       <Box sx={{ p: 3 }}>
-        <Typography variant="h4" gutterBottom>
-          Product Categories
-        </Typography>
-
         {isLoading ? (
           <LoadingSpinner />
         ) : error ? (

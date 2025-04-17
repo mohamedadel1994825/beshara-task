@@ -2,7 +2,7 @@
 
 import { RootState } from "@/store";
 import { logout } from "@/store/slices/authSlice";
-import { clearCart, setUserId } from "@/store/slices/cartSlice";
+import { setUserId } from "@/store/slices/cartSlice";
 import EmailIcon from "@mui/icons-material/Email";
 import InfoIcon from "@mui/icons-material/Info";
 import LoginIcon from "@mui/icons-material/Login";
@@ -34,20 +34,17 @@ const Navbar = () => {
   const { user, isAuthenticated } = useSelector(
     (state: RootState) => state.auth
   );
-  console.log("username", user?.username);
-
   const { items } = useSelector((state: RootState) => state.cart);
+
   const [mounted, setMounted] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   const totalItems = items.reduce((total, item) => total + item.quantity, 0);
-
-  // Menu state
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -60,7 +57,8 @@ const Navbar = () => {
   const handleLogout = () => {
     dispatch(logout());
     dispatch(setUserId(""));
-    dispatch(clearCart());
+    localStorage.removeItem("currentUser");
+    document.cookie = "auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     handleMenuClose();
     router.push("/");
   };
@@ -70,7 +68,6 @@ const Navbar = () => {
     router.push(path);
   };
 
-  // Get user initials for avatar
   const getInitials = () => {
     if (isAuthenticated && user) {
       return `${user.firstName?.[0] || ""}${
@@ -78,6 +75,14 @@ const Navbar = () => {
       }`.toUpperCase();
     }
     return "";
+  };
+
+  // Common button styles
+  const iconButtonStyles = {
+    p: { xs: 0.5, sm: 1 },
+    "& .MuiSvgIcon-root": {
+      fontSize: { xs: "1.1rem", sm: "1.25rem", md: "1.5rem" },
+    },
   };
 
   return (
@@ -89,10 +94,10 @@ const Navbar = () => {
           sx={{
             flexGrow: 1,
             fontSize: {
-              xs: "0.875rem", // Extra small screens
-              sm: "1rem", // Small screens
-              md: "1.25rem", // Medium screens
-              lg: "1.5rem", // Large screens
+              xs: "0.875rem",
+              sm: "1rem",
+              md: "1.25rem",
+              lg: "1.5rem",
             },
             fontWeight: 600,
             letterSpacing: "0.5px",
@@ -103,7 +108,6 @@ const Navbar = () => {
           </Link>
         </Typography>
 
-        {/* Common navigation links - visible to all users */}
         <Box
           sx={{
             display: "flex",
@@ -116,12 +120,7 @@ const Navbar = () => {
               color="inherit"
               component={Link}
               href="/about"
-              sx={{
-                p: { xs: 0.5, sm: 1 },
-                "& .MuiSvgIcon-root": {
-                  fontSize: { xs: "1.1rem", sm: "1.25rem", md: "1.5rem" },
-                },
-              }}
+              sx={iconButtonStyles}
             >
               <InfoIcon />
             </IconButton>
@@ -130,51 +129,24 @@ const Navbar = () => {
             color="inherit"
             component={Link}
             href="/contact"
-            sx={{
-              p: { xs: 0.5, sm: 1 },
-              "& .MuiSvgIcon-root": {
-                fontSize: { xs: "1.1rem", sm: "1.25rem", md: "1.5rem" },
-              },
-            }}
+            sx={iconButtonStyles}
           >
             <EmailIcon />
           </IconButton>
 
-          {/* User-specific navigation */}
           {isAuthenticated ? (
             <>
               <Tooltip title="Cart">
-                {mounted ? (
-                  <IconButton
-                    color="inherit"
-                    component={Link}
-                    href="/cart"
-                    sx={{
-                      p: { xs: 0.5, sm: 1 },
-                      "& .MuiSvgIcon-root": {
-                        fontSize: { xs: "1.1rem", sm: "1.25rem", md: "1.5rem" },
-                      },
-                    }}
-                  >
-                    <Badge badgeContent={totalItems} color="secondary">
-                      <ShoppingCartIcon />
-                    </Badge>
-                  </IconButton>
-                ) : (
-                  <IconButton
-                    color="inherit"
-                    component={Link}
-                    href="/cart"
-                    sx={{
-                      p: { xs: 0.5, sm: 1 },
-                      "& .MuiSvgIcon-root": {
-                        fontSize: { xs: "1.1rem", sm: "1.25rem", md: "1.5rem" },
-                      },
-                    }}
-                  >
+                <IconButton
+                  color="inherit"
+                  component={Link}
+                  href="/cart"
+                  sx={iconButtonStyles}
+                >
+                  <Badge badgeContent={totalItems} color="secondary">
                     <ShoppingCartIcon />
-                  </IconButton>
-                )}
+                  </Badge>
+                </IconButton>
               </Tooltip>
               <Tooltip title="Account">
                 <IconButton
@@ -246,7 +218,6 @@ const Navbar = () => {
           )}
         </Box>
 
-        {/* User account menu - only for logged-in users */}
         {isAuthenticated && (
           <Menu
             anchorEl={anchorEl}
@@ -286,9 +257,9 @@ const Navbar = () => {
                 color="text.secondary"
                 sx={{
                   fontSize: {
-                    xs: "0.7rem", // Extra small screens
-                    sm: "0.75rem", // Small screens
-                    md: "0.875rem", // Medium screens and up
+                    xs: "0.7rem",
+                    sm: "0.75rem",
+                    md: "0.875rem",
                   },
                   wordBreak: "break-word",
                   maxWidth: "200px",

@@ -77,6 +77,7 @@ export default function LoginForm() {
     console.log("user", user);
     if (user) {
       document.cookie = "auth=true; path=/";
+      localStorage.setItem("currentUser", JSON.stringify(user));
       dispatch(login(user));
       dispatch(setUserId(user.username));
       if (pendingCartItem) {

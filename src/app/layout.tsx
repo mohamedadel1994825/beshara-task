@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import CartInitializer from "@/components/cart/CartInitializer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,6 +24,7 @@ export default function RootLayout({
         <Providers>
           <AuthInitializer />
           <Navbar />
+          <CartInitializer />
           <main>{children}</main>
         </Providers>
       </body>
