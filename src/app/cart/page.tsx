@@ -6,20 +6,14 @@ import { Box, Typography, Snackbar, Alert } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { DragEndEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
-import { RootState } from "@/lib/store";
-import {
-  clearCart,
-  removeItem,
-  reorderItems,
-  updateQuantity,
-  useClearCartMutation,
-  useRemoveFromCartMutation,
-} from "@/features/cart/cartSlice";
+
 import EmptyCart from "@/components/cart/EmptyCart";
 import SortableCartList from "@/components/cart/SortableCartList";
 import CartSummary from "@/components/cart/CartSummary";
 import ClearCartDialog from "@/components/cart/ClearCartDialog";
 import { ToastState } from "@/types/cart";
+import { RootState } from "@/store";
+import { clearCart, removeItem, reorderItems, updateQuantity, useClearCartMutation, useRemoveFromCartMutation } from "@/store/slices/cartSlice";
 
 const CartPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -93,7 +87,7 @@ const CartPage: React.FC = () => {
   const handleClearCart = async () => {
     try {
       if (process.env.NODE_ENV === "production") {
-        await clearCartMutation().unwrap();
+        await clearCartMutation("").unwrap();
       } else {
         dispatch(clearCart());
       }

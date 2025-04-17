@@ -1,8 +1,8 @@
 "use client";
 
-import { clearCart, setUserId } from "@/features/cart/cartSlice";
-import { RootState } from "@/lib/store";
+import { RootState } from "@/store";
 import { logout } from "@/store/slices/authSlice";
+import { clearCart, setUserId } from "@/store/slices/cartSlice";
 import EmailIcon from "@mui/icons-material/Email";
 import InfoIcon from "@mui/icons-material/Info";
 import LoginIcon from "@mui/icons-material/Login";

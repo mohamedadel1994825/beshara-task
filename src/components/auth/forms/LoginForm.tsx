@@ -1,9 +1,9 @@
 // components/forms/LoginForm.tsx
 "use client";
 
-import { setUserId } from "@/features/cart/cartSlice";
 import { loginSchema } from "@/schemas/authSchemas";
 import { login } from "@/store/slices/authSlice";
+import { setUserId } from "@/store/slices/cartSlice";
 import { User } from "@/types/user";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Visibility from "@mui/icons-material/Visibility";

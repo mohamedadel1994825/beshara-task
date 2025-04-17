@@ -1,7 +1,7 @@
 "use client";
 
-import { addItem, updateQuantity } from "@/features/cart/cartSlice";
-import { RootState } from "@/lib/store";
+import { RootState } from "@/store";
+import { addItem, updateQuantity } from "@/store/slices/cartSlice";
 import { Product } from "@/types/product";
 import AddIcon from "@mui/icons-material/Add";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
@@ -19,8 +19,6 @@ import {
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
-
 
 interface Props {
   product: Product;
@@ -80,6 +78,9 @@ export default function AddToCartButton({ product }: Props) {
         price: product.price,
         image: product.image,
         quantity: 1,
+        description: product?.description, // Add missing property
+        category: product?.category, // Add missing property
+        rating: product?.rating,
       })
     );
 
@@ -160,7 +161,6 @@ export default function AddToCartButton({ product }: Props) {
     animatedElement.appendChild(icon);
     document.body.appendChild(animatedElement);
 
-
     // Trigger animation
     setTimeout(() => {
       animatedElement.style.left = `${endRect.left + endRect.width / 2}px`;
@@ -172,7 +172,6 @@ export default function AddToCartButton({ product }: Props) {
     // Remove element after animation
     setTimeout(() => {
       document.body.removeChild(animatedElement);
-   
     }, 800);
   };
 

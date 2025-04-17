@@ -1,5 +1,5 @@
 import AddToCartButton from "@/app/product/[id]/components/AddToCartButton";
-import { getProductsByCategory, Product } from "@/services/api";
+import { useGetProductsByCategoryQuery } from "@/services/productsApi"; // <-- RTK hook
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Accordion,
@@ -16,7 +16,6 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
 interface CategoryAccordionProps {
   category: string;
@@ -30,32 +29,14 @@ const CategoryAccordion = ({
   onChange,
 }: CategoryAccordionProps) => {
   const router = useRouter();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  // Fetch products when accordion is expanded
-  useEffect(() => {
-    if (expanded) {
-      const fetchProducts = async () => {
-        try {
-          setLoading(true);
-          const data = await getProductsByCategory(category);
-          setProducts(data);
-          setError(null);
-        } catch (err) {
-          setError(
-            `Failed to load products for ${category}. Please try again later.`
-          );
-          console.error(`Error fetching products for ${category}:`, err);
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      fetchProducts();
-    }
-  }, [expanded, category]);
+  // Only fetch if expanded to avoid unnecessary requests
+  const {
+    data: products = [],
+    isLoading,
+    isError,
+    error,
+  } = useGetProductsByCategoryQuery(category, { skip: !expanded });
 
   const handleProductClick = (productId: number) => {
     router.push(`/product/${productId}`);
@@ -71,12 +52,14 @@ const CategoryAccordion = ({
         <Typography variant="h6">{category}</Typography>
       </AccordionSummary>
       <AccordionDetails>
-        {loading ? (
+        {isLoading ? (
           <Box display="flex" justifyContent="center" p={3}>
             <CircularProgress />
           </Box>
-        ) : error ? (
-          <Typography color="error">{error}</Typography>
+        ) : isError ? (
+          <Typography color="error">
+            Failed to load products for {category}. Please try again later.
+          </Typography>
         ) : (
           <Grid container spacing={3}>
             {products.map((product) => (

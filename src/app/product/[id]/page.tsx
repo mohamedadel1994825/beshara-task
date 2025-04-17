@@ -1,50 +1,31 @@
 "use client";
 
-import { getProductById, Product } from "@/services/api";
-import {
-  Box,
-  Button,
-  Card,
-  CardMedia,
-  CircularProgress,
-  Grid,
-  Rating,
-  Typography,
-} from "@mui/material";
-import { useRouter } from "next/navigation";
-import { use, useEffect, useState } from "react";
-import AddToCartButton from "./components/AddToCartButton";
+import { useGetProductQuery } from "@/services/productsApi";
+import { Box, Button, CircularProgress, Typography } from "@mui/material";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect } from "react";
+import ProductDetails from "./components/ProductDetails";
 
-export default function ProductPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = use(params);
+export default function ProductPage() {
+  const { id } = useParams(); // Get 'id' from the URL parameters
   const router = useRouter();
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+
+  // Ensure 'id' is a string
+  const productId = Array.isArray(id) ? id[0] : id; // Extract the first element if it's an array
+
+  const {
+    data: product,
+    error,
+    isLoading,
+  } = useGetProductQuery(productId as string); // Ensure 'id' is treated as a string
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        setLoading(true);
-        const data = await getProductById(id);
-        setProduct(data);
-        setError(null);
-      } catch (err) {
-        setError("Failed to load product details. Please try again later.");
-        console.error("Error fetching product:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (!productId) {
+      router.push("/"); // Redirect to home if 'id' is undefined or invalid
+    }
+  }, [productId, router]);
 
-    fetchProduct();
-  }, [id]);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <Box display="flex" justifyContent="center" p={3}>
         <CircularProgress />
@@ -55,7 +36,7 @@ export default function ProductPage({
   if (error || !product) {
     return (
       <Box p={3}>
-        <Typography color="error">{error || "Product not found"}</Typography>
+        <Typography color="error">{"Product not found"}</Typography>
         <Button
           variant="contained"
           onClick={() => router.push("/")}
@@ -69,64 +50,7 @@ export default function ProductPage({
 
   return (
     <Box sx={{ p: 3 }}>
-      <Grid container spacing={4}>
-        <Grid item xs={12} md={6}>
-          <Card
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              p: 2,
-              maxHeight: { xs: "400px", md: "500px" },
-              overflow: "hidden",
-            }}
-          >
-            <Box
-              sx={{
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <CardMedia
-                component="img"
-                image={product.image}
-                alt={product.title}
-                sx={{
-                  objectFit: "contain",
-                  maxWidth: "100%",
-                  maxHeight: { xs: "300px", md: "400px" },
-                  width: "auto",
-                  height: "auto",
-                }}
-              />
-            </Box>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Typography variant="h4" gutterBottom>
-            {product.title}
-          </Typography>
-          <Typography variant="h5" color="primary" gutterBottom>
-            ${product.price}
-          </Typography>
-          <Box display="flex" alignItems="center" mb={2}>
-            <Rating value={product.rating.rate} readOnly precision={0.5} />
-            <Typography variant="body2" color="text.secondary" ml={1}>
-              ({product.rating.count} reviews)
-            </Typography>
-          </Box>
-          <Typography variant="body1" paragraph>
-            {product.description}
-          </Typography>
-          <Typography variant="subtitle1" gutterBottom>
-            Category: {product.category}
-          </Typography>
-          <AddToCartButton product={product} />
-        </Grid>
-      </Grid>
+      <ProductDetails id={productId as string} />
     </Box>
   );
 }

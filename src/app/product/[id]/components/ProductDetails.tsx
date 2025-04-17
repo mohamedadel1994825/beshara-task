@@ -1,10 +1,10 @@
 "use client";
 
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
-import { useGetProductQuery } from "@/features/products/productsSlice";
 import { Box, Card, Grid, Rating, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import AddToCartButton from "./AddToCartButton";
+import { useGetProductQuery } from "@/services/productsApi";
 
 export default function ProductDetails({ id }: { id: string }) {
   const router = useRouter();
@@ -27,6 +27,9 @@ export default function ProductDetails({ id }: { id: string }) {
     return null;
   }
 
+  // Log the product data to check the structure
+  console.log("product====",);
+
   return (
     <Box sx={{ p: 3 }}>
       <Grid container spacing={4}>
@@ -43,7 +46,7 @@ export default function ProductDetails({ id }: { id: string }) {
               }}
             >
               <img
-                src={product.image}
+                src={product.image || '/placeholder-image.jpg'} // Fallback for image
                 alt={product.title}
                 style={{
                   width: "300px",
@@ -56,19 +59,19 @@ export default function ProductDetails({ id }: { id: string }) {
         </Grid>
         <Grid item xs={12} md={6}>
           <Typography variant="h4" gutterBottom>
-            {product.title}
+            {product.title || "Product Title"} {/* Fallback for title */}
           </Typography>
           <Typography variant="h5" color="primary" gutterBottom>
-            ${product.price}
+            ${product.price || "N/A"} {/* Fallback for price */}
           </Typography>
           <Box display="flex" alignItems="center" mb={2}>
-            <Rating value={product.rating?.rate} readOnly />
+            <Rating value={product.rating?.rate || 0} readOnly />
             <Typography variant="body2" color="text.secondary" ml={1}>
-              ({product.rating?.count} reviews)
+              ({product.rating?.count || 0} reviews) {/* Fallback for rating count */}
             </Typography>
           </Box>
           <Typography variant="body1" paragraph>
-            {product.description}
+            {product.description || "No description available."} {/* Fallback for description */}
           </Typography>
           <AddToCartButton product={product} />
         </Grid>

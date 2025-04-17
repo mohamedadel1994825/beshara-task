@@ -29,7 +29,7 @@
 
 // export const { login, logout } = authSlice.actions;
 // export default authSlice.reducer;
-import { api } from '@/lib/api';
+import { api } from '@/services/api';
 import { User } from '@/types/user';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 

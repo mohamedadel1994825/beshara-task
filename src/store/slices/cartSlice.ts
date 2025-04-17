@@ -1,5 +1,5 @@
 import { getCartKey, saveCart } from '@/helpers/cart';
-import { api } from '@/lib/api';
+import { api } from '@/services/api';
 import { Product } from '@/types/product';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 

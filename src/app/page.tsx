@@ -2,33 +2,13 @@
 
 import CategoryAccordion from "@/components/products/CategoryAccordion";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
-import { getCategories } from "@/services/api";
+import { useGetCategoriesQuery } from "@/services/productsApi"; // Assuming you have this query hook
 import { Box, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function HomePage() {
-  const [categories, setCategories] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: categories, error, isLoading } = useGetCategoriesQuery(); // Using RTK query hook for fetching categories
   const [expanded, setExpanded] = useState<string | false>(false);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        setLoading(true);
-        const data = await getCategories();
-        setCategories(data);
-        setError(null);
-      } catch (err) {
-        setError("Failed to load categories. Please try again later.");
-        console.error("Error fetching categories:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCategories();
-  }, []);
 
   const handleAccordionChange = (category: string) => {
     setExpanded(expanded === category ? false : category);
@@ -41,13 +21,13 @@ export default function HomePage() {
           Product Categories
         </Typography>
 
-        {loading ? (
+        {isLoading ? (
           <LoadingSpinner />
         ) : error ? (
-          <Typography color="error">{error}</Typography>
+          <Typography color="error">{`Failed to load categories. Please try again later.`}</Typography>
         ) : (
           <Box sx={{ maxWidth: 1200, mx: "auto" }}>
-            {categories.map((category) => (
+            {categories?.map((category) => (
               <CategoryAccordion
                 key={category}
                 category={category}

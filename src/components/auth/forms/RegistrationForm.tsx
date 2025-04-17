@@ -1,9 +1,9 @@
 // components/forms/RegistrationForm.tsx
 "use client";
 
-import { clearCart } from "@/features/cart/cartSlice";
 import { registerSchema } from "@/schemas/authSchemas";
 import { login } from "@/store/slices/authSlice";
+import { clearCart } from "@/store/slices/cartSlice";
 import { ToastState } from "@/types/cart";
 import { RegisterFormData } from "@/types/formTypes";
 import { User } from "@/types/user";

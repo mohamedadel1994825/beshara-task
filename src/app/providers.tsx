@@ -1,11 +1,11 @@
 "use client";
 
-import { store } from "@/lib/store";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "react-redux";
 import theme from "./theme";
+import { store } from "@/store";
 
 const queryClient = new QueryClient();
 
