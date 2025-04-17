@@ -1,4 +1,5 @@
 "use client";
+import { Suspense } from 'react';
 
 import { loginSchema } from "@/schemas/authSchemas";
 import { login } from "@/store/slices/authSlice";

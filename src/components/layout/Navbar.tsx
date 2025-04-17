@@ -64,6 +64,7 @@ const Navbar = () => {
     localStorage.removeItem("currentUser");
     document.cookie = "auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     handleMenuClose();
+    setLoading(false);
     router.push("/");
   };
 
