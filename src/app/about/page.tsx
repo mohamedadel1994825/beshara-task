@@ -30,22 +30,22 @@ export default function AboutPage() {
       description: "Our customer service team is always here to help you.",
     },
   ];
-
+const imagesBaseUrl='https://i.pravatar.cc'
   const teamMembers = [
     {
       name: "John Doe",
       role: "CEO & Founder",
-      image: "/team/john.jpg",
+      image: `${imagesBaseUrl}/120?img=18`,
     },
     {
       name: "Jane Smith",
       role: "Marketing Director",
-      image: "/team/jane.jpg",
+      image: `${imagesBaseUrl}/120?img=12`,
     },
     {
       name: "Mike Johnson",
       role: "Product Manager",
-      image: "/team/mike.jpg",
+      image: `${imagesBaseUrl}/120?img=8`,
     },
   ];
 

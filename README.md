@@ -1,4 +1,4 @@
-# E-commerce Store
+# Beshara Store
 
 A modern e-commerce web application built with Next.js, Redux Toolkit, and Material-UI.
 
@@ -20,7 +20,7 @@ A modern e-commerce web application built with Next.js, Redux Toolkit, and Mater
 - Yup
 - React Query
 - Axios
-- React Beautiful DnD
+- DND KIT
 
 ## Getting Started
 

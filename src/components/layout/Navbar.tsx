@@ -157,7 +157,7 @@ const Navbar = () => {
                   color="inherit"
                   onClick={handleMenuOpen}
                   sx={{
-                    ml: { xs: 0.5, sm: 1 },
+                    ml: { xs: totalItems > 0 ? 1.5 : 0.5, sm: 1 },
                     border: "1px solid rgba(255,255,255,0.3)",
                     borderRadius: 1,
                     px: { xs: 1, sm: 2 },

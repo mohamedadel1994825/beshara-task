@@ -9,7 +9,7 @@ import CartInitializer from "@/components/cart/CartInitializer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "E-commerce Store",
+  title: "Beshara Store",
   description: "A modern e-commerce platform",
 };
 
