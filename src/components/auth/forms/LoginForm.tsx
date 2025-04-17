@@ -1,6 +1,7 @@
 // components/forms/LoginForm.tsx
 "use client";
 
+import { setUserId } from "@/features/cart/cartSlice";
 import { loginSchema } from "@/schemas/authSchemas";
 import { login } from "@/store/slices/authSlice";
 import { User } from "@/types/user";
@@ -73,10 +74,11 @@ export default function LoginForm() {
     const user = users.find(
       (u) => u.email === email && u.password === password
     );
-console.log('user', user)
+    console.log("user", user);
     if (user) {
       document.cookie = "auth=true; path=/";
       dispatch(login(user));
+      dispatch(setUserId(user.username));
       if (pendingCartItem) {
         router.push(`/product/${pendingCartItem.id}`);
       } else {

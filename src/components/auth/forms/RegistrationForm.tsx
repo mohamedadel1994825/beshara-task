@@ -1,6 +1,5 @@
 // components/forms/RegistrationForm.tsx
 "use client";
-import { v4 as uuidv4 } from 'uuid'; // Import UUID generator
 
 import { clearCart } from "@/features/cart/cartSlice";
 import { registerSchema } from "@/schemas/authSchemas";
@@ -76,7 +75,7 @@ export default function RegistrationForm() {
       }
   
       const newUser: User = {
-        userId: uuidv4(), // Generate a unique userId
+        userId: formData.username, // Generate a unique userId
         firstName: formData.firstName,
         lastName: formData.lastName,
         username: formData.username,

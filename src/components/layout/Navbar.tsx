@@ -1,5 +1,6 @@
 "use client";
 
+import { clearCart, setUserId } from "@/features/cart/cartSlice";
 import { RootState } from "@/lib/store";
 import { logout } from "@/store/slices/authSlice";
 import EmailIcon from "@mui/icons-material/Email";
@@ -33,7 +34,7 @@ const Navbar = () => {
   const { user, isAuthenticated } = useSelector(
     (state: RootState) => state.auth
   );
-  console.log('username', user?.username)
+  console.log("username", user?.username);
 
   const { items } = useSelector((state: RootState) => state.cart);
   const [mounted, setMounted] = useState(false);
@@ -58,6 +59,8 @@ const Navbar = () => {
 
   const handleLogout = () => {
     dispatch(logout());
+    dispatch(setUserId(""));
+    dispatch(clearCart());
     handleMenuClose();
     router.push("/");
   };

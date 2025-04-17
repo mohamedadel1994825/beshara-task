@@ -33,7 +33,7 @@ import { api } from '@/lib/api';
 import { User } from '@/types/user';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-type AuthUser = Pick<User, "username" | "email" | "firstName" | "lastName"|"userId">;
+type AuthUser = Pick<User, "username" | "email" | "firstName" | "lastName" | "userId">;
 
 
 interface AuthState {
@@ -80,6 +80,7 @@ const authSlice = createSlice({
             // Remove auth cookie
             document.cookie = 'auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
         },
+
     },
 });
 
