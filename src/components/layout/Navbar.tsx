@@ -13,6 +13,7 @@ import {
   AppBar,
   Badge,
   Box,
+  CircularProgress,
   Divider,
   IconButton,
   ListItemIcon,
@@ -31,6 +32,8 @@ import { useDispatch, useSelector } from "react-redux";
 const Navbar = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const [loading, setLoading] = useState(false); // State to manage loading
+
   const { user, isAuthenticated } = useSelector(
     (state: RootState) => state.auth
   );
@@ -55,6 +58,7 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
+    setLoading(true); // Set loading to true when logout starts
     dispatch(logout());
     dispatch(setUserId(""));
     localStorage.removeItem("currentUser");
@@ -281,10 +285,16 @@ const Navbar = () => {
             </MenuItem>
             <Divider />
             <MenuItem onClick={handleLogout}>
-              <ListItemIcon>
-                <LogoutIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Logout</ListItemText>
+              {loading ? (
+                <CircularProgress size={24} color="primary" />
+              ) : (
+                <>
+                  <ListItemIcon>
+                    <LogoutIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>Logout</ListItemText>
+                </>
+              )}
             </MenuItem>
           </Menu>
         )}
