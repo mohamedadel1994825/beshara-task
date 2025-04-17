@@ -85,6 +85,10 @@ const Navbar = () => {
     },
   };
 
+  if (!mounted) {
+    return null; // Prevent rendering anything until the client-side code is mounted
+  }
+
   return (
     <AppBar position="static">
       <Toolbar>
@@ -269,12 +273,6 @@ const Navbar = () => {
               </Typography>
             </Box>
             <Divider />
-            <MenuItem onClick={() => navigateTo("/profile")}>
-              <ListItemIcon>
-                <PersonIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Profile</ListItemText>
-            </MenuItem>
             <MenuItem onClick={() => navigateTo("/cart")}>
               <ListItemIcon>
                 <ShoppingCartIcon fontSize="small" />
