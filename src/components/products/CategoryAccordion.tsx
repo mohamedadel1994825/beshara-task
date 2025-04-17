@@ -1,4 +1,4 @@
-import AddToCartButton from "@/app/product/[id]/AddToCartButton";
+import AddToCartButton from "@/app/product/[id]/components/AddToCartButton";
 import { getProductsByCategory, Product } from "@/services/api";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {

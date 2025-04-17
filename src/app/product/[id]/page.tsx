@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { use, useEffect, useState } from "react";
-import AddToCartButton from "./AddToCartButton";
+import AddToCartButton from "./components/AddToCartButton";
 
 export default function ProductPage({
   params,
