@@ -1,4 +1,4 @@
-import authReducer from '@/features/auth/authSlice';
+import authReducer from '@/store/slices/authSlice';
 import cartReducer from '@/features/cart/cartSlice';
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';

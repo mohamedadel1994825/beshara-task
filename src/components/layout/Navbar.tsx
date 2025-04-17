@@ -1,7 +1,7 @@
 "use client";
 
-import { logout } from "@/features/auth/authSlice";
 import { RootState } from "@/lib/store";
+import { logout } from "@/store/slices/authSlice";
 import EmailIcon from "@mui/icons-material/Email";
 import InfoIcon from "@mui/icons-material/Info";
 import LoginIcon from "@mui/icons-material/Login";
@@ -33,6 +33,8 @@ const Navbar = () => {
   const { user, isAuthenticated } = useSelector(
     (state: RootState) => state.auth
   );
+  console.log('username', user?.username)
+
   const { items } = useSelector((state: RootState) => state.cart);
   const [mounted, setMounted] = useState(false);
 

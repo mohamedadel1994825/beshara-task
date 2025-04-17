@@ -1,6 +1,6 @@
 "use client";
 
-import { login } from "@/features/auth/authSlice";
+import { login } from "@/store/slices/authSlice";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
