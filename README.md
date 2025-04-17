@@ -85,18 +85,6 @@ Beshara Store uses [`next/font`](https://nextjs.org/docs/app/building-your-appli
 
 ---
 
-## 📦 Deployment
-
-Deploy effortlessly on [Vercel](https://vercel.com):
-
-- Automatic CI/CD integration
-- Optimized performance
-- Built-in analytics
-
-Learn more in the [Next.js Deployment Docs](https://nextjs.org/docs/app/building-your-application/deploying).
-
----
-
 ## 📚 Learn More
 
 - [Next.js Documentation](https://nextjs.org/docs)
