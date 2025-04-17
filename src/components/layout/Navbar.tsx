@@ -91,7 +91,7 @@ const Navbar = () => {
 
   return (
     <AppBar position="static">
-      <Toolbar>
+      <Toolbar sx={{ minWidth: 280 }}>
         <Typography
           variant="h6"
           component="div"

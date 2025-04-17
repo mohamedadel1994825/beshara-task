@@ -31,7 +31,7 @@ export default function ProductDetails({ id }: { id: string }) {
   console.log("product====",);
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ p: 3 ,minWidth: 250 }}>
       <Grid container spacing={4}>
         <Grid item xs={12} md={6}>
           <Card>

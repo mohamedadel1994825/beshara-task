@@ -50,6 +50,7 @@ export const SortableCartItem: React.FC<SortableCartItemProps> = ({
       ref={setNodeRef}
       style={style}
       sx={{
+        mx: "auto", minWidth: 250,
         mb: 2,
         boxShadow: isDragging ? 3 : 1,
         cursor: isDragging ? "grabbing" : "grab",

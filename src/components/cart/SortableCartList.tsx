@@ -54,7 +54,8 @@ const SortableCartList: React.FC<SortableCartListProps> = ({
         items={items.map(item => item.id.toString())}
         strategy={verticalListSortingStrategy}
       >
-        <Box
+              <Box
+                  
           sx={{
             transition: "background-color 0.2s ease",
           }}

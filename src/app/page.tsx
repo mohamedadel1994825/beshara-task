@@ -22,7 +22,7 @@ export default function HomePage() {
         ) : error ? (
           <Typography color="error">{`Failed to load categories. Please try again later.`}</Typography>
         ) : (
-          <Box sx={{ maxWidth: 1200, mx: "auto" }}>
+          <Box sx={{ maxWidth: 1200, mx: "auto", minWidth: 250 }}>
             {categories?.map((category) => (
               <CategoryAccordion
                 key={category}

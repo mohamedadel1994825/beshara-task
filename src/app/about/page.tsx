@@ -30,7 +30,8 @@ export default function AboutPage() {
       description: "Our customer service team is always here to help you.",
     },
   ];
-const imagesBaseUrl='https://i.pravatar.cc'
+
+  const imagesBaseUrl = "https://i.pravatar.cc";
   const teamMembers = [
     {
       name: "John Doe",
@@ -50,9 +51,9 @@ const imagesBaseUrl='https://i.pravatar.cc'
   ];
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <Container maxWidth="lg" sx={{ py: 4, minWidth: 250 }}>
       {/* Hero Section */}
-      <Box sx={{ textAlign: "center", mb: 6 }}>
+      <Box sx={{ textAlign: "center", mb: 6,minWidth: 250 }}>
         <Typography variant="h3" component="h1" gutterBottom>
           About Beshara
         </Typography>
@@ -62,7 +63,7 @@ const imagesBaseUrl='https://i.pravatar.cc'
       </Box>
 
       {/* Company Story */}
-      <Card sx={{ p: 4, mb: 6 }}>
+      <Card sx={{ p: 4, mb: 6 ,minWidth: 250}}>
         <Typography variant="h5" gutterBottom>
           Our Story
         </Typography>
@@ -81,10 +82,12 @@ const imagesBaseUrl='https://i.pravatar.cc'
       </Card>
 
       {/* Features */}
-      <Grid container spacing={4} sx={{ mb: 6 }}>
+      <Grid container spacing={4} sx={{ mb: 6,minWidth: 250 }}>
         {features.map((feature, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
-            <Card sx={{ p: 3, height: "100%", textAlign: "center" }}>
+            <Card
+              sx={{ p: 3, height: "100%", textAlign: "center", minWidth: 250 }}
+            >
               <Box sx={{ mb: 2 }}>{feature.icon}</Box>
               <Typography variant="h6" gutterBottom>
                 {feature.title}
@@ -111,10 +114,10 @@ const imagesBaseUrl='https://i.pravatar.cc'
         Meet the people behind Beshara
       </Typography>
 
-      <Grid container spacing={4} sx={{ mb: 6 }}>
+      <Grid container spacing={4} sx={{ mb: 6,minWidth: 250 }}>
         {teamMembers.map((member, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>
-            <Card sx={{ p: 3, textAlign: "center" }}>
+            <Card sx={{ p: 3, textAlign: "center", minWidth: 250 }}>
               <Avatar
                 src={member.image}
                 alt={member.name}
@@ -130,7 +133,7 @@ const imagesBaseUrl='https://i.pravatar.cc'
       </Grid>
 
       {/* Values */}
-      <Card sx={{ p: 4 }}>
+      <Card sx={{ p: 4 ,minWidth: 250}}>
         <Typography variant="h5" gutterBottom>
           Our Values
         </Typography>

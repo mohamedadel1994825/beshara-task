@@ -1,5 +1,4 @@
-"use client";
-
+"use client"
 import EmailIcon from "@mui/icons-material/Email";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -35,7 +34,16 @@ export default function ContactPage() {
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom align="center">
+      <Typography
+        variant="h4"
+        component="h1"
+        gutterBottom
+        align="center"
+        sx={{
+          minWidth: { xs: "auto", sm: 250 },
+          width: "100%", // Ensure it takes full width on mobile
+        }}
+      >
         Contact Us
       </Typography>
       <Typography
@@ -43,14 +51,18 @@ export default function ContactPage() {
         align="center"
         color="text.secondary"
         paragraph
+        sx={{
+          minWidth: { xs: "auto", sm: 250 },
+          width: "100%", // Ensure it takes full width on mobile
+        }}
       >
         Have questions? We'd love to hear from you. Send us a message and we'll
         respond as soon as possible.
       </Typography>
 
       <Grid container spacing={4} sx={{ mt: 2 }}>
-        <Grid item xs={12} md={6}>
-          <Card sx={{ p: 3, height: "100%" }}>
+        <Grid item xs={12} md={6} sx={{ width: "100%" }}>
+          <Card sx={{ p: 3, height: "100%", width: "100%" }}>
             <Typography variant="h6" gutterBottom>
               Get in Touch
             </Typography>
@@ -107,8 +119,8 @@ export default function ContactPage() {
           </Card>
         </Grid>
 
-        <Grid item xs={12} md={6}>
-          <Card sx={{ p: 3, height: "100%" }}>
+        <Grid item xs={12} md={6} sx={{ width: "100%" }}>
+          <Card sx={{ p: 3, height: "100%", width: "100%" }}>
             <Typography variant="h6" gutterBottom>
               Contact Information
             </Typography>
