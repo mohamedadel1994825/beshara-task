@@ -2,6 +2,7 @@
 
 import { addItem, updateQuantity } from "@/features/cart/cartSlice";
 import { RootState } from "@/lib/store";
+import { Product } from "@/types/product";
 import AddIcon from "@mui/icons-material/Add";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import LoginIcon from "@mui/icons-material/Login";
@@ -19,17 +20,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-interface Product {
-  id: number;
-  title: string;
-  price: number;
-  image: string;
-  description: string;
-  rating?: {
-    rate: number;
-    count: number;
-  };
-}
+
 
 interface Props {
   product: Product;
@@ -45,10 +36,6 @@ export default function AddToCartButton({ product }: Props) {
   const [isAdding, setIsAdding] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
-
-  // Animation states
-  const [animationActive, setAnimationActive] = useState(false);
-  const [animationComplete, setAnimationComplete] = useState(false);
 
   const [toast, setToast] = useState<{
     open: boolean;
@@ -173,7 +160,6 @@ export default function AddToCartButton({ product }: Props) {
     animatedElement.appendChild(icon);
     document.body.appendChild(animatedElement);
 
-    setAnimationActive(true);
 
     // Trigger animation
     setTimeout(() => {
@@ -186,8 +172,7 @@ export default function AddToCartButton({ product }: Props) {
     // Remove element after animation
     setTimeout(() => {
       document.body.removeChild(animatedElement);
-      setAnimationActive(false);
-      setAnimationComplete(true);
+   
     }, 800);
   };
 

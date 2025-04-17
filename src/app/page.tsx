@@ -1,8 +1,9 @@
 "use client";
 
 import CategoryAccordion from "@/components/products/CategoryAccordion";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { getCategories } from "@/services/api";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
 export default function HomePage() {
@@ -41,9 +42,7 @@ export default function HomePage() {
         </Typography>
 
         {loading ? (
-          <Box display="flex" justifyContent="center" p={3}>
-            <CircularProgress />
-          </Box>
+          <LoadingSpinner />
         ) : error ? (
           <Typography color="error">{error}</Typography>
         ) : (

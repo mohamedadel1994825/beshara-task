@@ -1,14 +1,8 @@
 "use client";
 
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { useGetProductQuery } from "@/features/products/productsSlice";
-import {
-  Box,
-  Card,
-  CircularProgress,
-  Grid,
-  Rating,
-  Typography,
-} from "@mui/material";
+import { Box, Card, Grid, Rating, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import AddToCartButton from "./AddToCartButton";
 
@@ -17,11 +11,7 @@ export default function ProductDetails({ id }: { id: string }) {
   const { data: product, isLoading, error } = useGetProductQuery(id);
 
   if (isLoading) {
-    return (
-      <Box display="flex" justifyContent="center" p={3}>
-        <CircularProgress />
-      </Box>
-    );
+    return <LoadingSpinner />;
   }
 
   if (error) {
