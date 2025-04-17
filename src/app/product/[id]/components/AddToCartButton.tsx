@@ -186,7 +186,7 @@ export default function AddToCartButton({ product }: Props) {
             display: "flex",
             alignItems: "center",
             width: "100%",
-            height: "100%",
+            // height: "100%",
             minHeight: { xs: "36px", sm: "40px" },
           }}
         >
