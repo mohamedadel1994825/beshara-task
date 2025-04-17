@@ -1,4 +1,3 @@
-// src/store/slices/cartSlice.ts
 import { getCartKey, saveCart } from '@/helpers/cart';
 import { api } from '@/services/api'; 
 import { Product } from '@/types/product';

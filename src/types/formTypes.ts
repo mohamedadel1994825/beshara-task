@@ -1,4 +1,3 @@
-// types/formTypes.ts
 
 export type RegisterFormData = {
     firstName: string;

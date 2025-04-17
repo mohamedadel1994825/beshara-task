@@ -1,4 +1,3 @@
-// src/types/cart.ts
 
 export interface CartItem {
     id: number;
@@ -6,7 +5,6 @@ export interface CartItem {
     price: number;
     quantity: number;
     image: string;
-    // Add any other properties your cart items have
   }
   
   export interface ToastState {

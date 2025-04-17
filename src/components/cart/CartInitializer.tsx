@@ -1,4 +1,3 @@
-// src/components/CartInitializer.tsx
 "use client";
 
 import { useEffect } from 'react';

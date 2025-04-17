@@ -1,4 +1,3 @@
-// src/components/cart/EmptyCart.tsx
 import React from "react";
 import { Box, Button, Typography } from "@mui/material";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";

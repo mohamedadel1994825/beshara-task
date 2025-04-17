@@ -1,4 +1,3 @@
-// src/components/cart/ClearCartDialog.tsx
 import React from "react";
 import {
   Button,

@@ -1,4 +1,3 @@
-// components/forms/RegistrationForm.tsx
 "use client";
 
 import { registerSchema } from "@/schemas/authSchemas";

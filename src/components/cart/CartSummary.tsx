@@ -1,4 +1,3 @@
-// src/components/cart/CartSummary.tsx
 import React from "react";
 import { Box, Button, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";

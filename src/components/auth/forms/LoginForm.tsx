@@ -1,4 +1,3 @@
-// components/forms/LoginForm.tsx
 "use client";
 
 import { loginSchema } from "@/schemas/authSchemas";
