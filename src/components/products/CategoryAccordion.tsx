@@ -103,7 +103,11 @@ const CategoryAccordion = ({
                       >
                         {product.title}
                       </Typography>
-                      <Typography variant="h6" color="primary">
+                      <Typography
+                        variant="h6"
+                        color="primary"
+                        textAlign={"center"}
+                      >
                         ${product.price}
                       </Typography>
                     </Box>
