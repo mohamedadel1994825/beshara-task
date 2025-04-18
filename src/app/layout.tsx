@@ -22,9 +22,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
+        <CartInitializer />
           <AuthInitializer />
           <Navbar />
-          <CartInitializer />
           <main>{children}</main>
         </Providers>
       </body>

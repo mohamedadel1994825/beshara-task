@@ -2,7 +2,7 @@
 
 import { registerSchema } from "@/schemas/authSchemas";
 import { login } from "@/store/slices/authSlice";
-import { clearCart } from "@/store/slices/cartSlice";
+import { clearCart, setUserId } from "@/store/slices/cartSlice"; // Added setUserId import
 import { ToastState } from "@/types/cart";
 import { RegisterFormData } from "@/types/formTypes";
 import { User } from "@/types/user";
@@ -74,44 +74,42 @@ export default function RegistrationForm() {
       }
   
       const newUser: User = {
-        userId: formData.username, // Generate a unique userId
+        userId: formData.username,
         firstName: formData.firstName,
         lastName: formData.lastName,
         username: formData.username,
-        password: formData.password,
+        password: formData.password, // Make sure to store this for login validation
         email: formData.email,
       };
   
       users.push(newUser);
       localStorage.setItem("registered_users", JSON.stringify(users));
+      
+      // Set auth cookie
+      document.cookie = "auth=true; path=/";
+      localStorage.setItem("currentUser", JSON.stringify(newUser));
+      
+      // Dispatch login action with the new user
+      dispatch(login(newUser));
       dispatch(clearCart());
-  
-      dispatch(
-        login({
-          userId: newUser.userId, // Store the userId during login
-          firstName: newUser.firstName,
-          lastName: newUser.lastName || "",
-          username: newUser.username,
-          email: newUser.email,
-        })
-      );
-  
-      sessionStorage.setItem("isLoggedIn", "true");
-      sessionStorage.setItem("currentUser", JSON.stringify(newUser));
+      dispatch(setUserId(newUser.username));
   
       setToast({
         open: true,
         message: "Registration successful!",
         severity: "success",
       });
-      setTimeout(() => router.push("/"), 1000);
+      
+      // Wait a moment for the toast to show before redirecting
+      setTimeout(() => {
+        router.push("/");
+      }, 1500);
     } catch (error) {
       console.error("Registration error:", error);
       setError("Registration failed. Please try again.");
       setIsLoading(false);
     }
   };
-  
 
   return (
     <Box

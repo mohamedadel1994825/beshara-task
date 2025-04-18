@@ -1,5 +1,4 @@
 "use client";
-import { Suspense } from 'react';
 
 import { loginSchema } from "@/schemas/authSchemas";
 import { login } from "@/store/slices/authSlice";
@@ -12,6 +11,7 @@ import {
   Alert,
   Box,
   Button,
+  CircularProgress,
   IconButton,
   InputAdornment,
   TextField,
@@ -39,6 +39,7 @@ export default function LoginForm() {
     id: number;
     returnTo: string;
   } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -62,32 +63,55 @@ export default function LoginForm() {
     } catch (error) {
       console.error("Error reading from sessionStorage:", error);
     }
-  }, [searchParams]);
 
-  const onSubmit = (data: FormData) => {
-    const existingUsers = localStorage.getItem("registered_users");
-    const users: User[] = existingUsers ? JSON.parse(existingUsers) : [];
-    const email = data.email.trim().toLowerCase();
-    const password = data.password.trim();
-    console.log("users", users);
-
-    const user = users.find(
-      (u) => u.email === email && u.password === password
-    );
-    console.log("user", user);
-    if (user) {
-      document.cookie = "auth=true; path=/";
-      localStorage.setItem("currentUser", JSON.stringify(user));
-      dispatch(login(user));
-      dispatch(setUserId(user.username));
-      if (pendingCartItem) {
-        router.push(`/product/${pendingCartItem.id}`);
-      } else {
+    // Check if already logged in
+    if (document.cookie.includes("auth=true")) {
+      const currentUser = localStorage.getItem("currentUser");
+      if (currentUser) {
         const from = searchParams.get("from");
         router.push(from || "/");
       }
-    } else {
-      setError("Invalid email or password");
+    }
+  }, [searchParams, router]);
+
+  const onSubmit = (data: FormData) => {
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const existingUsers = localStorage.getItem("registered_users");
+      const users: User[] = existingUsers ? JSON.parse(existingUsers) : [];
+      const email = data.email.trim().toLowerCase();
+      const password = data.password.trim();
+
+      const user = users.find(
+        (u) => u.email === email && u.password === password
+      );
+
+      if (user) {
+        // Set auth cookie with a longer expiration time
+        document.cookie = "auth=true; path=/; max-age=86400"; // 24 hours
+        localStorage.setItem("currentUser", JSON.stringify(user));
+
+        // Dispatch login action
+        dispatch(login(user));
+        dispatch(setUserId(user.username));
+
+        // Navigate to appropriate page
+        if (pendingCartItem) {
+          router.push(`/product/${pendingCartItem.id}`);
+        } else {
+          const from = searchParams.get("from");
+          router.push(from || "/");
+        }
+      } else {
+        setError("Invalid email or password");
+        setIsLoading(false);
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("An error occurred during login. Please try again.");
+      setIsLoading(false);
     }
   };
 
@@ -157,8 +181,14 @@ export default function LoginForm() {
         }}
       />
 
-      <Button type="submit" variant="contained" fullWidth sx={{ mb: 2 }}>
-        Login
+      <Button
+        type="submit"
+        variant="contained"
+        fullWidth
+        sx={{ mb: 2 }}
+        disabled={isLoading}
+      >
+        {isLoading ? <CircularProgress size={24} /> : "Login"}
       </Button>
 
       <Button variant="text" fullWidth onClick={() => router.push("/register")}>
