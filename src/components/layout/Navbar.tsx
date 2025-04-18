@@ -2,7 +2,7 @@
 
 import { RootState } from "@/store";
 import { logout } from "@/store/slices/authSlice";
-import { setUserId } from "@/store/slices/cartSlice";
+import { clearCart } from "@/store/slices/cartSlice";
 import EmailIcon from "@mui/icons-material/Email";
 import InfoIcon from "@mui/icons-material/Info";
 import LoginIcon from "@mui/icons-material/Login";
@@ -58,14 +58,21 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    setLoading(true); // Set loading to true when logout starts
-    dispatch(logout());
-    dispatch(setUserId(""));
+    setLoading(true);
+    document.cookie = "auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     localStorage.removeItem("currentUser");
-    document.cookie = "auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+    // Dispatch logout action
+    dispatch(logout());
+
+    // Clear cart from Redux state but NOT from localStorage
+    // This way other users' carts remain in localStorage
+    dispatch(clearCart());
+
+    // Redirect to login page
     handleMenuClose();
     setLoading(false);
-    router.push("/");
+    router.push("/login");
   };
 
   const navigateTo = (path: string) => {

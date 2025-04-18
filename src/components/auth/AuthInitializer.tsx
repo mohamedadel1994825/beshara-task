@@ -14,12 +14,37 @@ export default function AuthInitializer() {
     // Check for existing authentication
     const isAuthenticated = document.cookie.includes("auth=true");
     const userStr = localStorage.getItem("currentUser");
+    
+    // Check if user just registered
+    const justRegistered = sessionStorage.getItem("justRegistered");
+    
+    if (justRegistered === "true") {
+      // Clear the registration flag
+      sessionStorage.removeItem("justRegistered");
+      // Redirect to login page
+      router.push("/login");
+      return;
+    }
 
     if (isAuthenticated && userStr) {
       try {
         const user = JSON.parse(userStr);
+        
+        // Login the user
         dispatch(login(user));
-        dispatch(setUserId(user.username));
+        
+        // Extract user ID - extremely important for cart state
+        const userId = user.username || user.userId || user.id;
+        
+        // Explicitly set user ID for cart - this must be done AFTER login
+        if (userId) {
+          console.log("Setting cart user ID:", userId);
+          
+          // Small timeout to ensure login has completed
+          setTimeout(() => {
+            dispatch(setUserId(userId));
+          }, 100);
+        }
       } catch (error) {
         console.error("Error initializing auth state:", error);
         // Clear invalid auth data

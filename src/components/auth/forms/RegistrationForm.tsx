@@ -2,7 +2,7 @@
 
 import { registerSchema } from "@/schemas/authSchemas";
 import { login } from "@/store/slices/authSlice";
-import { clearCart, setUserId } from "@/store/slices/cartSlice"; // Added setUserId import
+import { clearCart, setUserId } from "@/store/slices/cartSlice";
 import { ToastState } from "@/types/cart";
 import { RegisterFormData } from "@/types/formTypes";
 import { User } from "@/types/user";
@@ -78,31 +78,25 @@ export default function RegistrationForm() {
         firstName: formData.firstName,
         lastName: formData.lastName,
         username: formData.username,
-        password: formData.password, // Make sure to store this for login validation
+        password: formData.password,
         email: formData.email,
       };
   
       users.push(newUser);
       localStorage.setItem("registered_users", JSON.stringify(users));
       
-      // Set auth cookie
-      document.cookie = "auth=true; path=/";
-      localStorage.setItem("currentUser", JSON.stringify(newUser));
+      // Set the registration flag for AuthInitializer to detect
+      sessionStorage.setItem("justRegistered", "true");
       
-      // Dispatch login action with the new user
-      dispatch(login(newUser));
-      dispatch(clearCart());
-      dispatch(setUserId(newUser.username));
-  
       setToast({
         open: true,
-        message: "Registration successful!",
+        message: "Registration successful! Redirecting to login...",
         severity: "success",
       });
       
-      // Wait a moment for the toast to show before redirecting
+      // Wait for the toast to be visible before redirecting
       setTimeout(() => {
-        router.push("/");
+        router.push("/login");
       }, 1500);
     } catch (error) {
       console.error("Registration error:", error);
