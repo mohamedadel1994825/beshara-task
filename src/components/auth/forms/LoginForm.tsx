@@ -74,7 +74,7 @@ export default function LoginForm() {
     }
   }, [searchParams, router]);
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     setIsLoading(true);
     setError("");
 
@@ -97,13 +97,17 @@ export default function LoginForm() {
         dispatch(login(user));
         dispatch(setUserId(user.username));
 
-        // Navigate to appropriate page
-        if (pendingCartItem) {
-          router.push(`/product/${pendingCartItem.id}`);
-        } else {
-          const from = searchParams.get("from");
-          router.push(from || "/");
-        }
+        // Add a slight delay before navigation to ensure state updates
+        setTimeout(() => {
+          // Navigate to appropriate page
+          if (pendingCartItem) {
+            router.push(`/product/${pendingCartItem.id}`);
+          } else {
+            const from = searchParams.get("from");
+            router.push(from || "/");
+          }
+          setIsLoading(false); // Make sure to reset loading state
+        }, 100);
       } else {
         setError("Invalid email or password");
         setIsLoading(false);
