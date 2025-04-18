@@ -10,26 +10,42 @@ import {
   Grid,
   TextField,
   Typography,
+  Alert,
 } from "@mui/material";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { contactSchema, ContactFormData } from "@/schemas/contactSchema";
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
+  const [submitted, setSubmitted] = useState(false);
+
+  // Set up React Hook Form with Yup validation
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting, isValid },
+    reset
+  } = useForm<ContactFormData>({
+    resolver: yupResolver(contactSchema),
+    mode: "onTouched", // Validate on blur
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission here
-    console.log("Form submitted:", formData);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  // Handle form submission
+  const onSubmit = (data: ContactFormData) => {
+    // Process form data
+    console.log("Form submitted:", data);
+    
+    // Show success message
+    setSubmitted(true);
+    
+    // Reset form
+    reset();
+    
+    // Hide success message after 5 seconds
+    setTimeout(() => {
+      setSubmitted(false);
+    }, 5000);
   };
 
   return (
@@ -41,7 +57,7 @@ export default function ContactPage() {
         align="center"
         sx={{
           minWidth: { xs: "auto", sm: 250 },
-          width: "100%", // Ensure it takes full width on mobile
+          width: "100%",
         }}
       >
         Contact Us
@@ -53,7 +69,7 @@ export default function ContactPage() {
         paragraph
         sx={{
           minWidth: { xs: "auto", sm: 250 },
-          width: "100%", // Ensure it takes full width on mobile
+          width: "100%",
         }}
       >
         Have questions? We'd love to hear from you. Send us a message and we'll
@@ -66,52 +82,68 @@ export default function ContactPage() {
             <Typography variant="h6" gutterBottom>
               Get in Touch
             </Typography>
-            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+            
+            {submitted && (
+              <Alert severity="success" sx={{ mb: 2 }}>
+                Thank you for your message! We'll get back to you soon.
+              </Alert>
+            )}
+            
+            <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ mt: 2 }}>
               <TextField
                 fullWidth
+                id="name"
                 label="Name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
+                {...register("name")}
+                error={!!errors.name}
+                helperText={errors.name?.message}
                 margin="normal"
                 required
               />
+              
               <TextField
                 fullWidth
+                id="email"
                 label="Email"
-                name="email"
                 type="email"
-                value={formData.email}
-                onChange={handleChange}
+                {...register("email")}
+                error={!!errors.email}
+                helperText={errors.email?.message}
                 margin="normal"
                 required
               />
+              
               <TextField
                 fullWidth
+                id="subject"
                 label="Subject"
-                name="subject"
-                value={formData.subject}
-                onChange={handleChange}
+                {...register("subject")}
+                error={!!errors.subject}
+                helperText={errors.subject?.message}
                 margin="normal"
                 required
               />
+              
               <TextField
                 fullWidth
+                id="message"
                 label="Message"
-                name="message"
                 multiline
                 rows={4}
-                value={formData.message}
-                onChange={handleChange}
+                {...register("message")}
+                error={!!errors.message}
+                helperText={errors.message?.message}
                 margin="normal"
                 required
               />
+              
               <Button
                 type="submit"
                 variant="contained"
                 color="primary"
                 size="large"
                 sx={{ mt: 2 }}
+                disabled={isSubmitting}
               >
                 Send Message
               </Button>
