@@ -30,7 +30,7 @@ const EmptyCart: React.FC = () => {
         <ShoppingCartOutlinedIcon
           sx={{
             fontSize: { xs: 40, sm: 50, md: 60 },
-            color: "primary.main",
+            color: "white",
           }}
         />
       </Box>
