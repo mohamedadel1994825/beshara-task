@@ -69,10 +69,10 @@ export default function LoginForm() {
       const currentUser = localStorage.getItem("currentUser");
       if (currentUser) {
         const from = searchParams.get("from");
-        router.push(from || "/");
+        window.location.href = from || "/"; // Use window.location for hard redirect
       }
     }
-  }, [searchParams, router]);
+  }, [searchParams]);
 
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);
@@ -97,17 +97,12 @@ export default function LoginForm() {
         dispatch(login(user));
         dispatch(setUserId(user.username));
 
-        // Add a slight delay before navigation to ensure state updates
-        setTimeout(() => {
-          // Navigate to appropriate page
-          if (pendingCartItem) {
-            router.push(`/product/${pendingCartItem.id}`);
-          } else {
-            const from = searchParams.get("from");
-            router.push(from || "/");
-          }
-          setIsLoading(false); // Make sure to reset loading state
-        }, 100);
+        // Use window.location for a hard redirect instead of router.push
+        const redirectTo = pendingCartItem 
+          ? `/product/${pendingCartItem.id}` 
+          : searchParams.get("from") || "/";
+        
+        window.location.href = redirectTo;
       } else {
         setError("Invalid email or password");
         setIsLoading(false);
