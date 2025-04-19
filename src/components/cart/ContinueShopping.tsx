@@ -19,7 +19,6 @@ const ContinueShoppingButton: React.FC = () => {
         backgroundColor: "white",
         zIndex: 10,
         p: 2,
-        borderBottom: "1px solid #eee",
       }}
     >
       <Button
