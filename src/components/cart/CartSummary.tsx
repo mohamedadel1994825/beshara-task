@@ -1,7 +1,7 @@
-import React from "react";
-import { Box, Button, Typography } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { CartItem } from "@/types/cart";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Box, Button, Typography } from "@mui/material";
+import React from "react";
 
 interface CartSummaryProps {
   items: CartItem[];
@@ -38,6 +38,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
         sx={{
           width: { xs: "100%", sm: "180px", md: "200px", lg: "220px" },
           py: { xs: 1.25, sm: 1.5 },
+          alignSelf: "flex-end",
           fontSize: { xs: "0.875rem", sm: "0.9375rem", md: "1rem" },
           fontWeight: 500,
           "&:hover": {
@@ -75,13 +76,9 @@ const CartSummary: React.FC<CartSummaryProps> = ({
           color="primary"
           size="large"
           sx={{
-            width: {
-              xs: "100%",
-              sm: "220px",
-              md: "280px",
-              lg: "320px",
-            },
-            py: { xs: 1.5, sm: 1.75, md: 2 },
+            width: { xs: "100%", sm: "200px", md: "220px", lg: "240px" },
+            py: { xs: 1.25, sm: 1.5 },
+
             fontSize: {
               xs: "0.9375rem",
               sm: "1rem",
