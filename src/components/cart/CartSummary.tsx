@@ -1,6 +1,7 @@
 import { CartItem } from "@/types/cart";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, Button, Typography } from "@mui/material";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 interface CartSummaryProps {
@@ -17,7 +18,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   const calculateTotal = () => {
     return items.reduce((total, item) => total + item.price * item.quantity, 0);
   };
-
+  const router = useRouter();
   return (
     <Box
       sx={{
@@ -75,6 +76,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
           variant="contained"
           color="primary"
           size="large"
+          onClick={() => router.push("/checkout")}
           sx={{
             width: { xs: "100%", sm: "200px", md: "220px", lg: "240px" },
             py: { xs: 1.25, sm: 1.5 },

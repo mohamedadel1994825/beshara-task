@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import CartSummary from "@/components/cart/CartSummary";
 import ClearCartDialog from "@/components/cart/ClearCartDialog";
+import ContinueShopping from "@/components/cart/ContinueShopping";
 import EmptyCart from "@/components/cart/EmptyCart";
 import SortableCartList from "@/components/cart/SortableCartList";
 import { RootState } from "@/store";
@@ -21,9 +22,11 @@ import {
   useRemoveFromCartMutation,
 } from "@/store/slices/cartSlice";
 import { ToastState } from "@/types/cart";
+import { useRouter } from "next/navigation";
 
 const CartPage: React.FC = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const { items } = useSelector((state: RootState) => state.cart);
   const [removeFromCart, { isLoading: isRemoving }] =
     useRemoveFromCartMutation();
@@ -44,7 +47,9 @@ const CartPage: React.FC = () => {
   const handleCloseToast = () => {
     setToast({ ...toast, open: false });
   };
-
+  const handleContinueShopping = () => {
+    router.push("/"); // Navigate to home page
+  };
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
@@ -156,6 +161,7 @@ const CartPage: React.FC = () => {
         <EmptyCart />
       ) : (
         <>
+          <ContinueShopping />
           <SortableCartList
             items={items}
             onDragEnd={handleDragEnd}
