@@ -49,30 +49,30 @@ export default function LoginForm() {
     resolver: yupResolver(loginSchema),
   });
 
-  useEffect(() => {
-    if (searchParams.get("registered") === "true") {
-      setShowRegistrationSuccess(true);
-    }
+  // useEffect(() => {
+  //   if (searchParams.get("registered") === "true") {
+  //     setShowRegistrationSuccess(true);
+  //   }
 
-    try {
-      const storedItem = sessionStorage.getItem("pendingCartItem");
-      if (storedItem) {
-        setPendingCartItem(JSON.parse(storedItem));
-        sessionStorage.removeItem("pendingCartItem");
-      }
-    } catch (error) {
-      console.error("Error reading from sessionStorage:", error);
-    }
+  //   try {
+  //     const storedItem = sessionStorage.getItem("pendingCartItem");
+  //     if (storedItem) {
+  //       setPendingCartItem(JSON.parse(storedItem));
+  //       sessionStorage.removeItem("pendingCartItem");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error reading from sessionStorage:", error);
+  //   }
 
-    // Check if already logged in
-    if (document.cookie.includes("auth=true")) {
-      const currentUser = localStorage.getItem("currentUser");
-      if (currentUser) {
-        const from = searchParams.get("from");
-        window.location.href = from || "/"; // Use window.location for hard redirect
-      }
-    }
-  }, [searchParams]);
+  //   // Check if already logged in
+  //   if (document.cookie.includes("auth=true")) {
+  //     const currentUser = localStorage.getItem("currentUser");
+  //     if (currentUser) {
+  //       const from = searchParams.get("from");
+  //       window.location.href = from || "/"; // Use window.location for hard redirect
+  //     }
+  //   }
+  // }, [searchParams]);
 
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);
