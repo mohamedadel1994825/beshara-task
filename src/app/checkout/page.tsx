@@ -1,4 +1,3 @@
-// src/app/checkout/page.tsx or src/pages/checkout/index.tsx
 "use client";
 
 import { RootState } from "@/store";
@@ -14,6 +13,7 @@ import {
   Stepper,
   Typography,
 } from "@mui/material";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import Link from "next/link";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
@@ -51,10 +51,10 @@ const CheckoutPage: React.FC = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isXs = useMediaQuery("(max-width:360px)");
 
   const handleNext = () => {
     if (activeStep === steps.length - 2) {
-      // Handle order submission
       handlePlaceOrder();
     } else {
       setActiveStep((prevStep) => prevStep + 1);
@@ -78,12 +78,8 @@ const CheckoutPage: React.FC = () => {
   const handlePlaceOrder = async () => {
     setIsSubmitting(true);
     setError(null);
-
     try {
-      // Mock API call - replace with actual order submission
       await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Process successful
       setActiveStep((prevStep) => prevStep + 1);
     } catch (err) {
       setError("There was an error processing your order. Please try again.");
@@ -129,85 +125,163 @@ const CheckoutPage: React.FC = () => {
   };
 
   return (
-    <Box sx={{ p: 3, maxWidth: 1200, mx: "auto" }}>
+    <Box
+      sx={{
+        p: { xs: 2, sm: 3 },
+        maxWidth: 1200,
+        mx: "auto",
+        minWidth: 300, // Apply minWidth to ensure container doesn't shrink below this width
+      }}
+    >
+      {/* Header */}
       <Box
         sx={{
           display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
           justifyContent: "space-between",
-          alignItems: "center",
+          alignItems: { xs: "flex-start", sm: "center" },
           mb: 4,
+          gap: 2,
+          minWidth: 300, // Apply minWidth to ensure header doesn't shrink below this width
         }}
       >
-        <Typography variant="h4" component="h1">
+        <Typography
+          variant="h4"
+          component="h1"
+          fontSize={{ xs: "1.5rem", sm: "2rem" }}
+        >
           Checkout
         </Typography>
+
         {activeStep < steps.length - 1 && (
           <Button
             variant="outlined"
             component={Link}
             href="/cart"
             startIcon={<ArrowBackIcon />}
+            sx={{
+              height: { xs: "36px", sm: "40px" },
+              fontSize: { xs: "0.75rem", sm: "0.875rem" },
+              px: { xs: 1.5, sm: 2.5 },
+              py: { xs: 0.5, sm: 1 },
+              alignSelf: { xs: "stretch", sm: "center" },
+            }}
           >
             Back to Cart
           </Button>
         )}
       </Box>
 
-      <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
-        {steps.map((label) => (
-          <Step key={label}>
-            <StepLabel>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
+      {/* Stepper */}
+      <Box
+        sx={{
+          overflowX: "auto",
+          mb: 4,
+          scrollbarWidth: "none", // Firefox
+          "&::-webkit-scrollbar": {
+            display: "none", // Chrome/Safari
+          },
+          minWidth: 300, // Apply minWidth to ensure stepper doesn't shrink below this width
+        }}
+      >
+        <Stepper
+          activeStep={activeStep}
+          sx={{
+            flexWrap: "nowrap",
+            width: "max-content",
+            minWidth: {
+              xs: "100%", // Full width on mobile
+              sm: "300px", // Set minimum width on tablets and up
+            },
+          }}
+        >
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepLabel
+                sx={{
+                  whiteSpace: "nowrap",
+                  fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                }}
+              >
+                {label}
+              </StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+      </Box>
 
+      {/* Error Message */}
       {error && (
         <Alert severity="error" sx={{ mb: 3 }}>
           {error}
         </Alert>
       )}
 
-      <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
+      {/* Step Content */}
+      <Paper elevation={3} sx={{ p: { xs: 2, sm: 3 }, mb: 4, minWidth: 300 }}>
         {renderStepContent(activeStep)}
       </Paper>
 
+      {/* Navigation Buttons */}
       {activeStep < steps.length - 1 && (
-        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column-reverse", sm: "row" },
+            justifyContent: "space-between",
+            alignItems: "stretch",
+            gap: 2,
+            mt: 3,
+            minWidth: 300, // Apply minWidth to ensure buttons don't shrink below this width
+          }}
+        >
           <Button
+            fullWidth
             color="inherit"
             disabled={activeStep === 0}
             onClick={handleBack}
-            sx={{ mr: 1 }}
+            sx={{ height: 48 }}
           >
             Back
           </Button>
-          <div>
+
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            onClick={handleNext}
+            disabled={
+              isSubmitting || activeStep === 0 || activeStep === 1 // optionally handle validation
+            }
+            sx={{ height: 48 }}
+          >
             {activeStep === steps.length - 2 ? (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleNext}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? <CircularProgress size={24} /> : "Place Order"}
-              </Button>
+              isSubmitting ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Place Order"
+              )
             ) : (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleNext}
-                disabled={activeStep === 0 || activeStep === 1}
-              >
-                Next
-              </Button>
+              "Next"
             )}
-          </div>
+          </Button>
         </Box>
       )}
 
+      {/* Continue Shopping on Last Step */}
       {activeStep === steps.length - 1 && (
         <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
-          <Button variant="contained" color="primary" component={Link} href="/">
+          <Button
+            variant="contained"
+            color="primary"
+            component={Link}
+            href="/"
+            sx={{
+              fontSize: { xs: "0.875rem", sm: "1rem" },
+              px: { xs: 2, sm: 4 },
+              py: { xs: 1, sm: 1.5 },
+            }}
+          >
             Continue Shopping
           </Button>
         </Box>
