@@ -18,13 +18,13 @@ export default function AuthInitializer() {
     // Check if user just registered
     const justRegistered = sessionStorage.getItem("justRegistered");
     
-    if (justRegistered === "true") {
-      // Clear the registration flag
-      sessionStorage.removeItem("justRegistered");
-      // Redirect to login page
-      router.push("/login");
-      return;
-    }
+    // if (justRegistered === "true") {
+    //   // Clear the registration flag
+    //   sessionStorage.removeItem("justRegistered");
+    //   // Redirect to login page
+    //   router.push("/login");
+    //   return;
+    // }
 
     if (isAuthenticated && userStr) {
       try {
