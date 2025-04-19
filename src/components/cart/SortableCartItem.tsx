@@ -1,6 +1,9 @@
-import React from "react";
+import { CartItem } from "@/types/cart";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import RemoveIcon from "@mui/icons-material/Remove";
 import {
   Box,
   Card,
@@ -10,10 +13,7 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
-import RemoveIcon from "@mui/icons-material/Remove";
-import { CartItem } from "@/types/cart";
+import React from "react";
 
 interface SortableCartItemProps {
   item: CartItem;
@@ -49,7 +49,8 @@ export const SortableCartItem: React.FC<SortableCartItemProps> = ({
       ref={setNodeRef}
       style={style}
       sx={{
-        mx: "auto", minWidth: 250,
+        mx: "auto",
+        minWidth: 250,
         mb: 2,
         boxShadow: isDragging ? 3 : 1,
         cursor: isDragging ? "grabbing" : "grab",
@@ -86,54 +87,65 @@ export const SortableCartItem: React.FC<SortableCartItemProps> = ({
           </Grid>
           <Grid item xs={12} sm={6}>
             <Typography variant="h6">{item.title}</Typography>
-            <Box
+            <Grid
+              container
               sx={{
-                display: "flex",
                 alignItems: "center",
-                gap: 1,
-                mt: 1,
+                display: "flex",
+                flexDirection: "column",
+                mt: 2,
+                mb: 1,
               }}
             >
-              <IconButton
-                size="small"
-                onClick={() => onQuantityChange(item.id, item.quantity - 1)}
-                disabled={item.quantity <= 1}
+              <Box
                 sx={{
-                  border: "1px solid",
-                  borderColor: "primary.main",
-                  "&:hover": {
-                    backgroundColor: "primary.light",
-                  },
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 2,
+                  mt: 1,
                 }}
               >
-                <RemoveIcon fontSize="small" />
-              </IconButton>
-              <Typography
-                variant="body1"
-                sx={{
-                  minWidth: "24px",
-                  textAlign: "center",
-                }}
-              >
-                {item.quantity}
+                <IconButton
+                  size="small"
+                  onClick={() => onQuantityChange(item.id, item.quantity - 1)}
+                  disabled={item.quantity <= 1}
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "primary.main",
+                    "&:hover": {
+                      backgroundColor: "primary.light",
+                    },
+                  }}
+                >
+                  <RemoveIcon fontSize="small" />
+                </IconButton>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    minWidth: "24px",
+                    textAlign: "center",
+                  }}
+                >
+                  {item.quantity}
+                </Typography>
+                <IconButton
+                  size="small"
+                  onClick={() => onQuantityChange(item.id, item.quantity + 1)}
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "primary.main",
+                    "&:hover": {
+                      backgroundColor: "primary.light",
+                    },
+                  }}
+                >
+                  <AddIcon fontSize="small" />
+                </IconButton>
+              </Box>
+              <Typography color="primary" sx={{ mt: 1.5 }}>
+                ${item.price}
               </Typography>
-              <IconButton
-                size="small"
-                onClick={() => onQuantityChange(item.id, item.quantity + 1)}
-                sx={{
-                  border: "1px solid",
-                  borderColor: "primary.main",
-                  "&:hover": {
-                    backgroundColor: "primary.light",
-                  },
-                }}
-              >
-                <AddIcon fontSize="small" />
-              </IconButton>
-            </Box>
-            <Typography color="primary" sx={{ mt: 1 }}>
-              ${item.price} each
-            </Typography>
+            </Grid>
           </Grid>
           <Grid item xs={12} sm={3}>
             <Box
