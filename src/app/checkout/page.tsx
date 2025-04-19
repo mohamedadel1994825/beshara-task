@@ -13,16 +13,16 @@ import {
   Stepper,
   Typography,
 } from "@mui/material";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import Link from "next/link";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 // Step components
 import OrderConfirmation from "@/components/checkout/OrderConfirmation";
 import OrderSummary from "@/components/checkout/OrderSummary";
 import PaymentForm from "@/components/checkout/PaymentForm";
 import ShippingForm from "@/components/checkout/ShippingForm";
+import { clearCart } from "@/store/slices/cartSlice";
 
 const steps = ["Shipping", "Payment", "Review", "Confirmation"];
 
@@ -51,8 +51,7 @@ const CheckoutPage: React.FC = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const isXs = useMediaQuery("(max-width:360px)");
-
+  const dispatch = useDispatch();
   const handleNext = () => {
     if (activeStep === steps.length - 2) {
       handlePlaceOrder();
@@ -80,6 +79,7 @@ const CheckoutPage: React.FC = () => {
     setError(null);
     try {
       await new Promise((resolve) => setTimeout(resolve, 2000));
+      dispatch(clearCart());
       setActiveStep((prevStep) => prevStep + 1);
     } catch (err) {
       setError("There was an error processing your order. Please try again.");
