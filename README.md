@@ -1,7 +1,7 @@
 **🛒 Beshara Store**
 **Live Demo**: https://beshara-store-2.vercel.app
 
-**Beshara Store** is a modern and fully responsive e-commerce web application built using **Next.js**, **TypeScript**, **Material-UI**,**Tailwind CSS**,**yup**,**react-hook-form** and **Redux Toolkit**.
+**Beshara Store** is a modern and fully responsive e-commerce web application built using **Next.js**, **TypeScript**, **Material-UI**, **Tailwind CSS**,**yup**, **react-hook-form** and **Redux Toolkit**.
 
 ---
 
