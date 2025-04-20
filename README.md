@@ -12,6 +12,8 @@
 - 📦 Detailed product view
 - 🛒 Shopping cart with drag-and-drop support
 - 💳 Seamless checkout process with order confirmation
+- ℹ️ About page with store information and mission
+- 📬 Contact Us page with a form to reach support
 - 📱 Responsive design for mobile and desktop
 - ✅ Form validation with React Hook Form + Yup
 - ⚡ Optimized data fetching with React Query
