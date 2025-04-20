@@ -1,19 +1,20 @@
+**🛒 Beshara Store**
+**Live Demo**: https://beshara-store-2.vercel.app
 
-# 🛒 Beshara Store
-
-**Beshara Store** is a modern and fully responsive e-commerce web application built using **Next.js**, **TypeScript**, **Material-UI**, and **Redux Toolkit**.
+**Beshara Store** is a modern and fully responsive e-commerce web application built using **Next.js**, **TypeScript**, **Material-UI**,**Tailwind CSS**,**yup**,**react-hook-form** and **Redux Toolkit**.
 
 ---
 
 ## 🚀 Features
 
-- 🔐 User registration & authentication  
-- 🛕️ Product catalog with category filtering  
-- 📦 Detailed product view  
-- 🛒 Shopping cart with drag-and-drop support  
-- 📱 Responsive design for mobile and desktop  
-- ✅ Form validation with React Hook Form + Yup  
-- ⚡ Optimized data fetching with React Query  
+- 🔐 User registration & authentication
+- 🛕️ Product catalog with category filtering
+- 📦 Detailed product view
+- 🛒 Shopping cart with drag-and-drop support
+- 💳 Seamless checkout process with order confirmation
+- 📱 Responsive design for mobile and desktop
+- ✅ Form validation with React Hook Form + Yup
+- ⚡ Optimized data fetching with React Query
 
 ---
 
@@ -22,17 +23,17 @@
 - **Framework**: [Next.js](https://nextjs.org/)
 - **Language**: TypeScript
 - **State Management**: Redux Toolkit
-- **Styling**: Material-UI (MUI)
+- **Styling**: Material-UI (MUI) + Tailwind CSS
 - **Forms**: React Hook Form + Yup
 - **Data Fetching**: React Query
-- **HTTP Client**: Axios
+- **HTTP Client**: Fetch Default By [Next.js]
 - **Drag and Drop**: DND Kit
 
 ---
 
 ## 📁 Project Structure
 
-```
+````
 src/
 ├── app/              # Next.js app router pages
 ├── components/       # Reusable components
@@ -58,18 +59,20 @@ This project uses the [Fake Store API](https://fakestoreapi.com/):
 
 ## 🛠️ Getting Started
 
-1. **Clone the repository**  
+1. **Clone the repository**
    ```bash
    git clone https://github.com/mohamedadel1994825/beshara-task.git
    cd beshara-store
-   ```
+````
 
-2. **Install dependencies**  
+2. **Install dependencies**
+
    ```bash
    npm install --legacy-peer-deps
    ```
 
-3. **Start the development server**  
+3. **Start the development server**
+
    ```bash
    npm run dev
    ```
@@ -93,4 +96,3 @@ Beshara Store uses [`next/font`](https://nextjs.org/docs/app/building-your-appli
 - [React Query](https://tanstack.com/query/latest)
 
 ---
-
